@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>poiqn — ポイくんといっしょに</title>
+  <meta name="description" content="ポイくんは、政治ニュースを感情から知っていくサービスです。今日のニュースに「こわい」「むずかしい」「しりたい」で反応しよう。">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://poiqn.jp/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:title" content="poiqn — ポイくんといっしょに">
+  <meta property="og:description" content="政治のことを、感情から知っていく。">
+  <meta property="og:url" content="https://poiqn.jp/">
+  <meta property="og:image" content="https://poiqn.jp/img/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="poiqn — ポイくんといっしょに">
+  <meta name="twitter:description" content="政治のことを、感情から知っていく。">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "poiqn",
+    "alternateName": "ポイくん",
+    "description": "政治のことを、感情から知っていく。",
+    "url": "https://poiqn.jp/",
+    "inLanguage": "ja",
+    "publisher": {
+      "@type": "Organization",
+      "name": "poiqn",
+      "logo": { "@type": "ImageObject", "url": "https://poiqn.jp/img/logo.png" }
+    }
+  }
+  </script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Barlow+Condensed:wght@400;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #1A1A1A;
+      --gray-dark: #555;
+      --gray-mid: #999;
+      --gray-light: #ededed;
+      --white: #ffffff;
+      --accent: #A78BFA;
+      --accent-pale: #EDE9FE;
+      --font: 'Noto Sans JP', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; font-size: 1rem; }
+
+    body {
+      font-family: var(--font);
+      font-weight: 500;
+      background: var(--gray-light);
+      color: var(--black);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      position: sticky;
+      top: 0;
+      background: rgba(250,250,250,0.9);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      background: rgba(250,250,250,0.95);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--black);
+      z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .bottom-nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 4px 0;
+      text-decoration: none;
+      color: var(--black);
+      font-size: 0.71rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .bottom-nav a:hover,
+    .bottom-nav a.active { color: var(--black); }
+    .bottom-nav svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      height: 100dvh;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* 卵：常にセンター固定 */
+    .poikun-wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      width: 180px;
+      height: 200px;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .poikun-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    .poikun-wrap:hover img {
+      transform: translateY(-6px) scale(1.04);
+    }
+    .poikun-bubble {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border: 1px solid var(--black);
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+      line-height: 1;
+      transition: opacity 0.4s ease;
+    }
+    .poikun-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 7px solid var(--black);
+    }
+    .poikun-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid white;
+      z-index: 1;
+    }
+    .hero[data-state="2"] .poikun-bubble {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* パネル共通 */
+    .hero-panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 24px 80px;
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    /* 卵の高さ分スペーサー */
+    .panel-spacer { height: 80px; flex-shrink: 0; }
+
+    /* パネル1 */
+    .hero-panel-1 {
+      opacity: 1;
+      transform: translateY(0);
+      justify-content: flex-start;
+      padding-top: calc(50vh + 4px);
+    }
+    .hero[data-state="2"] .hero-panel-1 {
+      opacity: 0;
+      transform: translateY(-24px);
+      pointer-events: none;
+    }
+
+    /* パネル2 */
+    .hero-panel-2 {
+      opacity: 0;
+      transform: translateY(24px);
+      pointer-events: none;
+      justify-content: flex-end;
+      padding-bottom: 25vh;
+    }
+    .hero[data-state="2"] .hero-panel-2 {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* ── 吹き出しバブル ── */
+    .news-bubbles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .news-bubble {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      background: white;
+      border: 1px solid var(--black);
+      border-radius: 10px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      opacity: 0;
+      transform: scale(0) rotate(-8deg);
+    }
+    .hero-panel-2.playing .news-bubble {
+      animation: bubble-pop 0.38s cubic-bezier(.34,1.56,.64,1) forwards;
+      animation-delay: calc(var(--i) * 0.13s);
+    }
+    @keyframes bubble-pop {
+      from { opacity: 0; transform: scale(0) rotate(-8deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    /* スタンプは最初は非表示、phase3で表示 */
+    .hero-panel-2 .stamps,
+    .hero-panel-2 .stamps-hint {
+      opacity: 0;
+      transition: opacity .8s ease;
+    }
+    .hero-panel-2.stamps-visible .stamps,
+    .hero-panel-2.stamps-visible .stamps-hint {
+      opacity: 1;
+    }
+
+    /* 日付 */
+    .hero-eyebrow {
+      font-family: 'Silkscreen', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--black);
+      text-transform: uppercase;
+      line-height: 1;
+      display: inline-flex;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 0;
+      position: fixed;
+      top: 0;
+      right: 0;
+      border-bottom: 1px solid var(--black);
+      border-left: 1px solid var(--black);
+      padding: 4px 10px;
+      z-index: 100;
+    }
+    .eyebrow-year { font-size: 1rem; }
+    .eyebrow-date { font-size: 1rem; }
+    .eyebrow-year::after { content: '/'; }
+
+    .hero-title {
+      font-size: clamp(1rem, 4.5vw, 2.4rem);
+      font-weight: 900;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+    .hero-logo {
+      height: 2em;
+      width: auto;
+      display: block;
+      margin: .5em 0;
+    }
+    .hero-sub {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--black);
+      line-height: 1.8;
+      max-width: 340px;
+      margin-top: 1rem;
+      margin-bottom: 32px;
+    }
+
+    /* スワイプヒント */
+    .swipe-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.71rem;
+      font-weight: 700;
+      color: var(--black);
+      animation: nudge 2s ease-in-out infinite;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+    .swipe-hint svg {
+      width: 16px; height: 16px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round;
+    }
+    @keyframes nudge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* ── EMOTION STAMPS ── */
+    .stamps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .stamp {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid var(--black);
+      border-radius: 10px;
+      padding: 1rem .5rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+      font-weight: 700;
+      font-size: 0.70em;
+      color: var(--black);
+      user-select: none;
+    }
+    .stamp:hover {
+      border-color: var(--accent);
+      background: var(--accent-pale);
+      transform: translateY(-3px) scale(1.05);
+    }
+    .stamp.pressed {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      transform: scale(0.95);
+    }
+    .stamp-icon { font-size: 1.57rem; line-height: 0; }
+    .stamp-icon img { width: 28px; height: 28px; object-fit: contain; }
+    .stamp-label { white-space: nowrap; }
+    .stamp-count {
+      font-size: 0.79rem;
+      color: var(--gray-mid);
+      margin-top: 2px;
+    }
+    .stamp.pressed .stamp-count { color: rgba(255,255,255,0.8); }
+
+    .stamps-hint {
+      margin: 0 0 1rem;
+      font-size: 0.79rem;
+      font-weight: 500;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-label {
+      font-size: 0.79rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-mid);
+      margin-bottom: 20px;
+    }
+    .news-label {
+      font-family: 'Silkscreen', sans-serif;
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    /* ── PLANET ── */
+    .planet-section {
+      padding: 60px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-top: 1px solid var(--black);
+    }
+
+    .planet-wrap {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 24px;
+    }
+    .planet-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      animation: rotate 300s linear infinite;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .planet-stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 8px;
+    }
+    .planet-stat {
+      text-align: center;
+    }
+    .planet-stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+    .planet-stat-label {
+      font-size: 0.79rem;
+      color: var(--gray-mid);
+      font-weight: 700;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .planet-stat-label img { width: 20px; height: 20px; object-fit: contain; }
+    .planet-reset {
+      font-size: 0.79rem;
+      color: var(--gray-mid);
+      margin-top: 16px;
+      font-weight: 500;
+    }
+    .planet-reset span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── NEWS ── */
+    .news-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--black);
+      overflow: hidden;
+    }
+    .news-section > h2 {
+      padding: 0 24px;
+      margin-bottom: 20px;
+    }
+
+    /* スライダー */
+    .news-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      padding: 4px 24px 20px;
+      scrollbar-width: none;
+      cursor: grab;
+    }
+    .news-slider::-webkit-scrollbar { display: none; }
+    .news-slider.dragging { cursor: grabbing; }
+
+    /* ドットインジケーター */
+    .news-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 24px;
+    }
+    .news-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gray-mid);
+      transition: background 0.2s, transform 0.2s;
+    }
+    .news-dot.active {
+      background: var(--black);
+      transform: scale(1.3);
+    }
+
+    .news-card {
+      background: white;
+      border: 1px solid var(--black);
+      border-radius: 20px;
+      padding: 24px 28px;
+      scroll-snap-align: start;
+      flex: 0 0 calc(100vw - 64px);
+      max-width: 560px;
+      min-width: 0;
+      transition: border-color 0.2s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .news-card:hover {
+      border-color: var(--accent);
+    }
+    .news-tag {
+      display: inline-block;
+      font-size: 0.71rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      background: var(--accent-pale);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .news-title {
+      font-size: 1.14rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .news-body {
+      font-size: 0.93rem;
+      color: var(--black);
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .news-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .news-source {
+      font-size: 0.79rem;
+      color: var(--gray-mid);
+      font-weight: 500;
+    }
+    .news-source a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .news-stamps {
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+    }
+    .news-stamp-mini {
+      font-size: 0.86rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--black);
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--black);
+      transition: all 0.15s;
+      font-family: var(--font);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .news-stamp-mini img { width: 18px; height: 18px; object-fit: contain; }
+    .news-stamp-mini:hover {
+      border-color: var(--accent);
+      background: var(--accent-pale);
+    }
+    .news-stamp-mini.pressed {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--black);
+    }
+
+    /* ── ABOUT ── */
+    .about-section {
+      padding: 60px 24px;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: center;
+      border-top: 1px solid var(--black);
+      width: 100%;
+    }
+    .about-text {
+      font-size: 0.93rem;
+      color: var(--black);
+      line-height: 2;
+      font-weight: 500;
+    }
+    .about-highlight {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--black);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 24px;
+      text-align: center;
+      border-top: 1px solid var(--black);
+      font-size: 0.86rem;
+      color: var(--gray-mid);
+      font-weight: 500;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+    .delay-5 { animation-delay: 0.65s; }
+
+    /* ── MOBILE ── */
+    body { padding-bottom: 70px; }
+
+    @media (max-width: 480px) {
+      header { padding: 16px 20px; }
+      .hero { padding: 60px 20px 48px; }
+      .stamps { gap: 8px; }
+      .stamp { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header role="banner">
+    <a href="/"><img src="img/logo.png" alt="poiqn トップページへ" class="logo-img"></a>
+  </header>
+
+  <!-- BOTTOM NAV -->
+  <!-- <nav class="bottom-nav">
+    <a href="#news">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
+      ニュース
+    </a>
+    <a href="#planet">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><ellipse cx="12" cy="12" rx="11" ry="4.5"/></svg>
+      惑星
+    </a>
+    <a href="#about">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
+      ポイくん？
+    </a>
+  </nav> -->
+
+  <main id="main-content">
+
+  <!-- HERO -->
+  <section class="hero" data-state="1" aria-label="ポイくん イントロダクション">
+
+    <!-- 卵（常に表示） -->
+    <div class="poikun-wrap">
+      <span class="poikun-bubble">なにが起きてるの？</span>
+      <img src="img/egg.png" alt="ポイくんの卵" role="img">
+    </div>
+
+    <!-- パネル1：日付・コピー・キャプション -->
+    <div class="hero-panel hero-panel-1">
+      <p class="hero-eyebrow"><span class="eyebrow-year"></span><span class="eyebrow-date"></span></p>
+      <h1 class="hero-title">
+        こんにちは、<br><img src="img/logo.png" alt="ポイくん" class="hero-logo">です。
+      </h1>
+      <p class="hero-sub">
+        政治のことを<br>感情から知っていく。
+      </p>
+      <button class="swipe-hint" onclick="setHeroState(2)" aria-label="次へ">
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </button>
+    </div>
+
+    <!-- パネル2：感情ボタン -->
+    <div class="hero-panel hero-panel-2" aria-label="今日の感情を選ぶ">
+      <div class="news-bubbles" id="news-bubbles">
+        <span class="news-bubble" style="--i:0;  --x:3%;  --y:5% ">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:1;  --x:52%; --y:8% ">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:2;  --x:28%; --y:3% ">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:3;  --x:68%; --y:14%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:4;  --x:2%;  --y:18%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:5;  --x:38%; --y:12%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:6;  --x:72%; --y:22%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:7;  --x:14%; --y:25%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:8;  --x:56%; --y:30%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:9;  --x:28%; --y:28%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:10; --x:4%;  --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:11; --x:80%; --y:10%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:12; --x:74%; --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:13; --x:18%; --y:40%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:14; --x:48%; --y:38%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:15; --x:22%; --y:16%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:16; --x:46%; --y:20%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:17; --x:64%; --y:42%">18歳から投票できるって、実際どういう意味があるの？</span>
+        <span class="news-bubble" style="--i:18; --x:8%;  --y:43%">物価がまた上がった。わたしの生活、どうなる？</span>
+        <span class="news-bubble" style="--i:19; --x:72%; --y:4% ">18歳から投票できるって、実際どういう意味があるの？</span>
+      </div>
+      <p class="stamps-hint">まずは今日のきもちを押してみる</p>
+      <div class="stamps">
+        <button class="stamp" data-emotion="0" onclick="pressStamp(this)" aria-pressed="false">
+          <span class="stamp-icon" aria-hidden="true"></span>
+          <span class="stamp-label"></span>
+          <span class="stamp-count" id="count-0" aria-live="polite" aria-atomic="true"></span>
+        </button>
+        <button class="stamp" data-emotion="1" onclick="pressStamp(this)" aria-pressed="false">
+          <span class="stamp-icon" aria-hidden="true"></span>
+          <span class="stamp-label"></span>
+          <span class="stamp-count" id="count-1" aria-live="polite" aria-atomic="true"></span>
+        </button>
+        <button class="stamp" data-emotion="2" onclick="pressStamp(this)" aria-pressed="false">
+          <span class="stamp-icon" aria-hidden="true"></span>
+          <span class="stamp-label"></span>
+          <span class="stamp-count" id="count-2" aria-live="polite" aria-atomic="true"></span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- NEWS -->
+  <section class="news-section" id="news" aria-labelledby="news-heading">
+    <h2 id="news-heading" class="section-label news-label">NEWS</h2>
+
+    <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 横スワイプで閲覧">
+    </div><!-- /.news-slider -->
+
+    <div class="news-dots" id="news-dots" aria-hidden="true"></div>
+
+  </section>
+
+  <!-- PLANET -->
+  <section class="planet-section" id="planet" aria-labelledby="planet-heading">
+    <h2 id="planet-heading" class="section-label fade-up">みんなのきもち</h2>
+
+    <div class="planet-wrap fade-up delay-1" role="img" aria-label="ポイくんの惑星 — みんなの感情で育ちます">
+      <img src="img/planet.PNG" alt="今日の惑星 — ユーザーの感情を反映した惑星" aria-hidden="true">
+    </div>
+
+    <dl class="planet-stats fade-up delay-2" aria-label="今日の感情の集計">
+      <div class="planet-stat" data-emotion="0">
+        <dt class="planet-stat-label"></dt>
+        <dd class="planet-stat-num">0</dd>
+      </div>
+      <div class="planet-stat" data-emotion="1">
+        <dt class="planet-stat-label"></dt>
+        <dd class="planet-stat-num">0</dd>
+      </div>
+      <div class="planet-stat" data-emotion="2">
+        <dt class="planet-stat-label"></dt>
+        <dd class="planet-stat-num">0</dd>
+      </div>
+    </dl>
+
+    <p class="planet-reset fade-up delay-3">
+      <span aria-hidden="true"></span>毎日リセットされます
+    </p>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section" id="about" aria-labelledby="about-heading">
+    <h2 id="about-heading" class="section-label">ポイくん について</h2>
+    <p class="about-text">
+      このサイトは <span class="about-highlight">AIと一緒に</span><br>
+      偏らないように気をつけながら作っています。<br><br>
+      運営者も、学びながら作っています。<br>
+      おかしいと思ったら教えてください。<br><br>
+      ポイくんは、あなたと一緒に育ちます。
+    </p>
+  </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer role="contentinfo">
+    <p><small>© 2026 poiqn</small></p>
+  </footer>
+
+  <script>
+    // =============================================
+    // Firebase 設定
+    // =============================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCDvxC6uI5_HXieXPqMNaATJfgw2w9dwnw",
+      authDomain: "poiqn-jp.firebaseapp.com",
+      databaseURL: "https://poiqn-jp-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "poiqn-jp",
+      storageBucket: "poiqn-jp.firebasestorage.app",
+      messagingSenderId: "395537016177",
+      appId: "1:395537016177:web:367528c7416152a33142d0",
+      measurementId: "G-GK6YBNRSZT"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // =============================================
+    // 感情ボタン設定 — ここだけ編集すれば全体に反映
+    // =============================================
+    const EMOTIONS = [
+      { label: 'こわい',      gif: 'img/face_anxiety.gif'   },
+      { label: 'むずかしい',  gif: 'img/face_difficult.gif' },
+      { label: 'しりたい',    gif: 'img/face_want.gif'      },
+    ];
+
+    // カウント表示を更新
+    function updateCountDisplay(idx, count) {
+      const el = document.getElementById('count-' + idx);
+      if (el) el.textContent = count;
+      // 惑星statsのカウントも更新
+      const stat = document.querySelector(`.planet-stat[data-emotion="${idx}"] .planet-stat-num`);
+      if (stat) stat.textContent = count;
+    }
+
+    // 各要素を EMOTIONS から描画
+    function renderEmotions() {
+      document.querySelectorAll('.stamp[data-emotion]').forEach(btn => {
+        const e = EMOTIONS[btn.dataset.emotion];
+        btn.querySelector('.stamp-icon').innerHTML = `<img src="${e.gif}" alt="${e.label}">`;
+        btn.querySelector('.stamp-label').textContent = e.label;
+      });
+      document.querySelectorAll('.planet-stat[data-emotion]').forEach(el => {
+        const e = EMOTIONS[el.dataset.emotion];
+        el.querySelector('.planet-stat-label').innerHTML =
+          `<img src="${e.gif}" alt="${e.label}">${e.label}`;
+      });
+      document.querySelectorAll('.news-stamp-mini[data-emotion]').forEach(btn => {
+        const e = EMOTIONS[btn.dataset.emotion];
+        btn.innerHTML = `<img src="${e.gif}" alt="${e.label}">`;
+      });
+    }
+    renderEmotions();
+
+    // Firebase リアルタイムリスナー — カウント同期
+    EMOTIONS.forEach((_, idx) => {
+      db.ref(`counts/${idx}`).on('value', snap => {
+        const count = snap.val() || 0;
+        updateCountDisplay(idx, count);
+      });
+    });
+
+    // ── ヒーロー スワイプ切り替え ──
+    const heroEl = document.querySelector('.hero');
+    const panel2El = document.querySelector('.hero-panel-2');
+    const bubblesEl = document.getElementById('news-bubbles');
+
+    function setHeroState(n) {
+      heroEl.dataset.state = String(n);
+
+      if (n === 2) {
+        // リセット
+        panel2El.classList.remove('playing', 'stamps-visible');
+        bubblesEl.style.transition = '';
+        bubblesEl.style.opacity = '';
+
+        // フェーズ①② 吹き出し出現（panel fade-in後に開始）
+        setTimeout(() => {
+          panel2El.classList.add('playing');
+        }, 300);
+
+        // フェーズ③ 親要素ごとフェードアウト
+        setTimeout(() => {
+          bubblesEl.style.transition = 'opacity 2.2s ease';
+          bubblesEl.style.opacity = '0';
+        }, 2800);
+        // フェーズ③ バブルフェード(2.2s)後にスタンプ表示
+        setTimeout(() => {
+          panel2El.classList.add('stamps-visible');
+        }, 2800 + 2000);
+      } else {
+        panel2El.classList.remove('playing', 'stamps-visible');
+        bubblesEl.style.transition = '';
+        bubblesEl.style.opacity = '';
+      }
+    }
+
+    // hero が画面内にあるか監視
+    let heroVisible = true;
+    new IntersectionObserver(entries => {
+      heroVisible = entries[0].isIntersecting;
+    }, { threshold: 0.5 }).observe(heroEl);
+
+    function heroNext() {
+      if (heroEl.dataset.state === '1') setHeroState(2);
+      else document.querySelector('#news').scrollIntoView({ behavior: 'smooth' });
+    }
+    function heroPrev() {
+      if (heroEl.dataset.state === '2') setHeroState(1);
+    }
+
+    // ホイール（passive: false でスクロール完全ブロック）
+    heroEl.addEventListener('wheel', e => {
+      if (!heroVisible) return;
+      e.preventDefault();
+      if (e.deltaY > 30) heroNext();
+      else if (e.deltaY < -30) heroPrev();
+    }, { passive: false });
+
+    // タッチ
+    let touchStartY = 0;
+    heroEl.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    heroEl.addEventListener('touchmove', e => { if (heroVisible) e.preventDefault(); }, { passive: false });
+    heroEl.addEventListener('touchend', e => {
+      if (!heroVisible) return;
+      const dy = touchStartY - e.changedTouches[0].clientY;
+      if (dy > 40) heroNext();
+      else if (dy < -40) heroPrev();
+    });
+
+    // 今日の日付
+    const now = new Date();
+    document.querySelector('.eyebrow-year').textContent = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    document.querySelector('.eyebrow-date').textContent = `${mm}/${dd}`;
+
+    // ヒーロースタンプ押下
+    const pressed = [false, false, false];
+    const eggImg = document.querySelector('.poikun-wrap img');
+
+    function playEggBirth() {
+      eggImg.src = 'img/egg-birth.GIF?t=' + Date.now();
+    }
+
+    function pressStamp(el) {
+      const idx = parseInt(el.dataset.emotion);
+      const wasPressed = pressed[idx];
+      pressed[idx] = !wasPressed;
+      el.classList.toggle('pressed', pressed[idx]);
+      el.setAttribute('aria-pressed', String(pressed[idx]));
+      db.ref(`counts/${idx}`).transaction(current => (current || 0) + (wasPressed ? -1 : 1));
+      playEggBirth();
+    }
+
+    // ニュースカードのスタンプ
+    function miniStamp(el) {
+      const idx = parseInt(el.dataset.emotion);
+      const wasPressed = el.classList.contains('pressed');
+      el.classList.toggle('pressed', !wasPressed);
+      el.setAttribute('aria-pressed', String(!wasPressed));
+      db.ref(`counts/${idx}`).transaction(current => (current || 0) + (wasPressed ? -1 : 1));
+    }
+
+    // Intersection Observer でフェードイン
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.planet-section .fade-up').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // ── news.json 読み込み＆描画 ──
+    async function loadNews() {
+      let articles = [];
+      try {
+        const res = await fetch('news.json?t=' + Date.now());
+        const data = await res.json();
+        articles = data.articles || [];
+      } catch (e) {
+        console.warn('news.json 取得失敗:', e);
+      }
+
+      // フォールバック（JSON未生成時）
+      if (articles.length === 0) {
+        articles = [
+          { title: '物価がまた上がった。わたしの生活、どうなる？', summary: '4月から電気代・食料品の価格がさらに上昇する見通しが政府から発表されました。賃上げが追いつかない世帯への影響が懸念されています。', source: 'Reuters Japan', url: 'https://jp.reuters.com', category: '経済' },
+          { title: '18歳から投票できるって、実際どういう意味があるの？', summary: '選挙権が18歳に引き下げられて数年が経ちましたが、若い世代の投票率はまだ低いまま。「行っても変わらない」という声と「行かないと変わらない」という声、どちらも本音です。', source: '時事通信', url: 'https://www.jiji.com', category: '社会' },
+        ];
+      }
+
+      const slider = document.getElementById('news-slider');
+      slider.innerHTML = articles.map(a => `
+        <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle">
+          <span class="news-tag" itemprop="articleSection">${a.category}</span>
+          <h3 class="news-title" itemprop="headline">${a.title}</h3>
+          <p class="news-body" itemprop="description">${a.summary}</p>
+          <footer class="news-footer">
+            <span class="news-source">出典: <a href="${a.url}" target="_blank" rel="noopener" itemprop="url">${a.source}</a></span>
+            <div class="news-stamps" role="group" aria-label="この記事への感情">
+              <button class="news-stamp-mini" data-emotion="0" onclick="miniStamp(this)" aria-pressed="false"></button>
+              <button class="news-stamp-mini" data-emotion="1" onclick="miniStamp(this)" aria-pressed="false"></button>
+              <button class="news-stamp-mini" data-emotion="2" onclick="miniStamp(this)" aria-pressed="false"></button>
+            </div>
+          </footer>
+        </article>
+      `).join('');
+
+      // 感情アイコン描画
+      slider.querySelectorAll('.news-stamp-mini[data-emotion]').forEach(btn => {
+        const e = EMOTIONS[btn.dataset.emotion];
+        btn.innerHTML = `<img src="${e.gif}" alt="${e.label}">`;
+        btn.setAttribute('aria-label', e.label);
+      });
+
+      // ニュースバブルのテキストを更新
+      const titles = articles.map(a => a.title);
+      const bubbles = document.querySelectorAll('.news-bubble');
+      bubbles.forEach((b, i) => { b.textContent = titles[i % titles.length]; });
+
+      // スライダー初期化
+      initSlider();
+    }
+    loadNews();
+
+    // ── ニューススライダー（loadNews後に呼ばれる） ──
+    const dotsEl = document.getElementById('news-dots');
+
+    function initSlider() {
+      const slider = document.getElementById('news-slider');
+      const cards  = slider.querySelectorAll('.news-card');
+
+      // ドット再生成
+      dotsEl.innerHTML = '';
+      cards.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'news-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => {
+          cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        });
+        dotsEl.appendChild(dot);
+      });
+
+      // スクロールでドット更新
+      slider.addEventListener('scroll', () => {
+        const idx = Math.round(slider.scrollLeft / slider.offsetWidth);
+        dotsEl.querySelectorAll('.news-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === idx);
+        });
+      }, { passive: true });
+
+      // マウスドラッグ
+      let isDown = false, startX, scrollLeft;
+      slider.addEventListener('mousedown', e => {
+        isDown = true; slider.classList.add('dragging');
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+      slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('dragging'); });
+      slider.addEventListener('mouseup',    () => { isDown = false; slider.classList.remove('dragging'); });
+      slider.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        slider.scrollLeft = scrollLeft - (e.pageX - slider.offsetLeft - startX);
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+name: Update News
+
+on:
+  schedule:
+    - cron: '0 0,6,12,18 * * *'   # JST 9, 15, 21, 3時（UTC+9）
+  workflow_dispatch:                 # 手動実行ボタン
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Fetch & summarize news
+        working-directory: scripts
+        run: node update-news.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit news.json
+        run: |
+          git config user.name  "poiqn-bot"
+          git config user.email "bot@poiqn.jp"
+          git add poiqn-jp/news.json
+          git diff --staged --quiet || git commit -m "chore: update news [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push

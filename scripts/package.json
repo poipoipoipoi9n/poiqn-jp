@@ -1,0 +1,9 @@
+{
+  "name": "poiqn-news-updater",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "fast-xml-parser": "^4.4.0"
+  }
+}
