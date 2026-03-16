@@ -1,32 +1,23 @@
 {
-  "updatedAt": "2026-03-16T16:48:18.008Z",
+  "updatedAt": "2026-03-16T17:47:24.577Z",
   "articles": [
     {
-      "id": "431bae63-035a-401b-ab3e-0d8308e757df",
-      "title": "茂木外相 サウジ・UAE外相と相次ぎ電話会談 連携を呼びかけ",
-      "summary": "茂木外務大臣は、16日夜、サウジアラビアとUAE＝アラブ首長国連邦の外相と相次いで電話で会談し、原油の安定供給やホルムズ海峡の安全な航行に向けた連携を呼びかけました。",
-      "source": "NHK",
-      "url": "http://www3.nhk.or.jp/news/html/20260316/k10015077461000.html",
+      "id": "e34e8f6a-0d17-493c-8046-8c45281a0e77",
+      "title": "米、各国に艦船派遣要求　日本名指し、首脳会談焦点",
+      "summary": "",
+      "source": "47NEWS",
+      "url": "https://www.47news.jp/14005795.html",
       "category": "政治",
-      "publishedAt": "Tue, 17 Mar 2026 00:00:29 +0900"
+      "publishedAt": ""
     },
     {
-      "id": "693d3ea4-4c44-4315-bc00-4c805c48acb1",
-      "title": "自民 小林政調会長 総裁選で支援受けた議員らと会合",
-      "summary": "自民党の小林政務調査会長は16日夜、去年とおととしの総裁選挙でみずからを支援した議員らと会合を開き、引き続き連携して高市政権を支えていくことを確認しました。",
-      "source": "NHK",
-      "url": "http://www3.nhk.or.jp/news/html/20260316/k10015077411000.html",
+      "id": "76abc013-a489-4ce4-a5b5-b9ac99d79900",
+      "title": "【速報】トランプ氏、海峡安全確保へ日本に支援要求",
+      "summary": "",
+      "source": "47NEWS",
+      "url": "https://www.47news.jp/14005794.html",
       "category": "政治",
-      "publishedAt": "Mon, 16 Mar 2026 22:13:33 +0900"
-    },
-    {
-      "id": "996b890e-7a12-43fb-b076-ccc50d1440ba",
-      "title": "シンガポール首相 あす日本訪問 高市首相と会談へ",
-      "summary": "シンガポールのウォン首相が17日から日本を訪れ、高市総理大臣と首脳会談を行うことになりました。",
-      "source": "NHK",
-      "url": "http://www3.nhk.or.jp/news/html/20260316/k10015077381000.html",
-      "category": "政治",
-      "publishedAt": "Mon, 16 Mar 2026 22:07:23 +0900"
+      "publishedAt": ""
     }
   ]
 }
