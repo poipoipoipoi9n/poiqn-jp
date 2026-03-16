@@ -497,55 +497,72 @@
       margin-bottom: 20px;
     }
 
-    /* スライダー */
-    .news-slider {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 16px;
-      padding: 4px 24px 20px;
-      scrollbar-width: none;
-      cursor: grab;
-    }
-    .news-slider::-webkit-scrollbar { display: none; }
-    .news-slider.dragging { cursor: grabbing; }
-
-    /* ドットインジケーター */
-    .news-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
+    /* カードスタック */
+    .news-stack-wrap {
+      position: relative;
       padding: 0 24px;
     }
-    .news-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--gray-mid);
-      transition: background 0.2s, transform 0.2s;
+    .news-slider {
+      position: relative;
+      height: 380px;
+      touch-action: none;
+      border-radius: 20px;
     }
-    .news-dot.active {
-      background: var(--black);
-      transform: scale(1.3);
+    .news-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 380px;
+      gap: 16px;
+    }
+    .news-empty-msg {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--black);
+    }
+    .news-reset-btn {
+      font-family: var(--font);
+      font-size: 0.86rem;
+      font-weight: 700;
+      padding: 10px 28px;
+      border-radius: 40px;
+      border: 1px solid var(--black);
+      cursor: pointer;
+      background: white;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .news-reset-btn:hover {
+      background: var(--accent-pale);
+      border-color: var(--accent);
+    }
+
+    /* カウンター */
+    .news-counter {
+      text-align: center;
+      font-family: 'Silkscreen', var(--font);
+      font-size: 0.79rem;
+      color: var(--gray-mid);
+      margin-top: 14px;
+      letter-spacing: 0.05em;
     }
 
     .news-card {
+      position: absolute;
+      inset: 0;
       background: white;
       border: 1px solid var(--black);
       border-radius: 20px;
       padding: 24px 28px;
-      scroll-snap-align: start;
-      flex: 0 0 calc(100vw - 64px);
-      max-width: 560px;
-      min-width: 0;
-      transition: border-color 0.2s;
-      cursor: pointer;
+      cursor: grab;
       user-select: none;
+      transform-origin: center bottom;
+      will-change: transform;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
-    .news-card:hover {
-      border-color: var(--accent);
-    }
+    .news-card.is-dragging { cursor: grabbing; }
     .news-tag {
       display: inline-block;
       font-size: 0.71rem;
@@ -564,24 +581,75 @@
       margin-bottom: 10px;
     }
     .news-body {
+      flex: 1;
       font-size: 0.93rem;
       color: var(--black);
       line-height: 1.8;
       margin-bottom: 14px;
     }
+    .news-body .subj {
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .news-body .pred {
+      background: linear-gradient(transparent 55%, rgba(167, 139, 250, 0.35) 55%);
+    }
+    .news-body .partner {
+      text-decoration: underline wavy;
+      text-decoration-color: var(--accent);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    .news-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .news-date {
+      font-family: 'Silkscreen', var(--font);
+      font-size: 0.71rem;
+      color: var(--gray-mid);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      padding-top: 2px;
+    }
     .news-footer {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
+      padding-top: 14px;
     }
-    .news-source {
-      font-size: 0.79rem;
+    .news-source-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .news-read-label {
+      font-size: 0.71rem;
       color: var(--gray-mid);
       font-weight: 500;
     }
-    .news-source a {
-      color: var(--accent);
+    .news-source-btn {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.79rem;
+      font-weight: 700;
+      font-family: var(--font);
+      color: var(--black);
       text-decoration: none;
+      border: 1px solid var(--black);
+      border-radius: 20px;
+      padding: 4px 12px;
+      transition: border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .news-source-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-pale);
     }
     .news-stamps {
       display: flex;
@@ -773,16 +841,21 @@
   <section class="news-section" id="news" aria-labelledby="news-heading">
     <h2 id="news-heading" class="section-label news-label">NEWS</h2>
 
-    <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 横スワイプで閲覧">
-    </div><!-- /.news-slider -->
+    <div class="news-stack-wrap">
+      <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧"></div>
+      <div class="news-empty" id="news-empty" hidden>
+        <p class="news-empty-msg">全部読んだよ！</p>
+        <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
+      </div>
+    </div>
 
-    <div class="news-dots" id="news-dots" aria-hidden="true"></div>
+    <div class="news-counter" id="news-counter" aria-live="polite"></div>
 
   </section>
 
   <!-- PLANET -->
   <section class="planet-section" id="planet" aria-labelledby="planet-heading">
-    <h2 id="planet-heading" class="section-label fade-up">みんなのきもち</h2>
+    <h2 id="planet-heading" class="section-label fade-up">みんなのきもちを見てみる</h2>
 
     <div class="planet-wrap fade-up delay-1" role="img" aria-label="ポイくんの惑星 — みんなの感情で育ちます">
       <img src="img/planet.PNG" alt="今日の惑星 — ユーザーの感情を反映した惑星" aria-hidden="true">
@@ -810,7 +883,7 @@
 
   <!-- ABOUT -->
   <section class="about-section" id="about" aria-labelledby="about-heading">
-    <h2 id="about-heading" class="section-label">ポイくん について</h2>
+    <h2 id="about-heading" class="section-label">ポイくんって？</h2>
     <p class="about-text">
       このサイトは <span class="about-highlight">AIと一緒に</span><br>
       偏らないように気をつけながら作っています。<br><br>
@@ -1008,6 +1081,13 @@
       observer.observe(el);
     });
 
+    function fmtDate(str) {
+      if (!str) return '';
+      const d = new Date(str);
+      if (isNaN(d)) return '';
+      return String(d.getMonth() + 1).padStart(2, '0') + '/' + String(d.getDate()).padStart(2, '0');
+    }
+
     // ── news.json 読み込み＆描画 ──
     async function loadNews() {
       let articles = [];
@@ -1030,11 +1110,17 @@
       const slider = document.getElementById('news-slider');
       slider.innerHTML = articles.map(a => `
         <article class="news-card" itemscope itemtype="https://schema.org/NewsArticle">
-          <span class="news-tag" itemprop="articleSection">${a.category}</span>
+          <div class="news-card-header">
+            <span class="news-tag" itemprop="articleSection">${a.category}</span>
+            <time class="news-date" datetime="${a.publishedAt}">${fmtDate(a.publishedAt)}</time>
+          </div>
           <h3 class="news-title" itemprop="headline">${a.title}</h3>
           <p class="news-body" itemprop="description">${a.summary}</p>
           <footer class="news-footer">
-            <span class="news-source">出典: <a href="${a.url}" target="_blank" rel="noopener" itemprop="url">${a.source}</a></span>
+            <div class="news-source-wrap">
+              <span class="news-read-label">もっと詳しく読む</span>
+              <a class="news-source-btn" href="${a.url}" target="_blank" rel="noopener" itemprop="url">出典：${a.source}</a>
+            </div>
             <div class="news-stamps" role="group" aria-label="この記事への感情">
               <button class="news-stamp-mini" data-emotion="0" onclick="miniStamp(this)" aria-pressed="false"></button>
               <button class="news-stamp-mini" data-emotion="1" onclick="miniStamp(this)" aria-pressed="false"></button>
@@ -1061,46 +1147,107 @@
     }
     loadNews();
 
-    // ── ニューススライダー（loadNews後に呼ばれる） ──
-    const dotsEl = document.getElementById('news-dots');
+    // ── Tinder式カードスタック ──
+    const counterEl = document.getElementById('news-counter');
+    const emptyEl   = document.getElementById('news-empty');
+    let cardsList = [];
+    let current   = 0;
+
+    function updateStack(animate) {
+      const total = cardsList.length;
+      cardsList.forEach((card, i) => {
+        const pos = i - current;
+        if (pos < 0) { card.style.display = 'none'; return; }
+        card.style.display = '';
+        card.style.zIndex  = total - pos;
+        card.style.opacity = pos <= 2 ? '1' : '0';
+        if (animate && pos > 0) {
+          card.style.transition = 'transform 0.3s ease';
+          setTimeout(() => { card.style.transition = ''; }, 300);
+        } else if (!animate) {
+          card.style.transition = '';
+        }
+        if (pos === 0)      card.style.transform = '';
+        else if (pos === 1) card.style.transform = 'scale(0.96) translateY(10px)';
+        else if (pos === 2) card.style.transform = 'scale(0.92) translateY(20px)';
+        else                card.style.transform = 'scale(0.88) translateY(30px)';
+      });
+      const remaining = total - current;
+      if (remaining > 0) {
+        emptyEl.hidden   = true;
+        counterEl.textContent = `${current + 1} / ${total}`;
+      } else {
+        emptyEl.hidden   = false;
+        counterEl.textContent = '';
+      }
+    }
+
+    function resetCards() {
+      current = 0;
+      cardsList.forEach(c => { c.style.display = ''; c.style.opacity = ''; c.style.transform = ''; c.style.transition = ''; });
+      updateStack(false);
+    }
 
     function initSlider() {
       const slider = document.getElementById('news-slider');
-      const cards  = slider.querySelectorAll('.news-card');
+      cardsList = [...slider.querySelectorAll('.news-card')];
+      current   = 0;
+      updateStack(false);
 
-      // ドット再生成
-      dotsEl.innerHTML = '';
-      cards.forEach((_, i) => {
-        const dot = document.createElement('span');
-        dot.className = 'news-dot' + (i === 0 ? ' active' : '');
-        dot.addEventListener('click', () => {
-          cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        });
-        dotsEl.appendChild(dot);
-      });
+      const THRESHOLD = 80;
+      let isDragging = false, startX, startY, dragX;
 
-      // スクロールでドット更新
-      slider.addEventListener('scroll', () => {
-        const idx = Math.round(slider.scrollLeft / slider.offsetWidth);
-        dotsEl.querySelectorAll('.news-dot').forEach((d, i) => {
-          d.classList.toggle('active', i === idx);
-        });
-      }, { passive: true });
+      function getTop() { return current < cardsList.length ? cardsList[current] : null; }
 
-      // マウスドラッグ
-      let isDown = false, startX, scrollLeft;
-      slider.addEventListener('mousedown', e => {
-        isDown = true; slider.classList.add('dragging');
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-      });
-      slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('dragging'); });
-      slider.addEventListener('mouseup',    () => { isDown = false; slider.classList.remove('dragging'); });
-      slider.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        slider.scrollLeft = scrollLeft - (e.pageX - slider.offsetLeft - startX);
-      });
+      function onStart(e) {
+        const card = getTop(); if (!card) return;
+        isDragging = true; dragX = 0;
+        const pt = e.touches ? e.touches[0] : e;
+        startX = pt.clientX; startY = pt.clientY;
+        card.style.transition = '';
+        card.classList.add('is-dragging');
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        if (e.cancelable) e.preventDefault();
+        const card = getTop(); if (!card) return;
+        const pt = e.touches ? e.touches[0] : e;
+        dragX = pt.clientX - startX;
+        const dragY = (pt.clientY - startY) * 0.2;
+        const rot   = dragX * 0.07;
+        card.style.transform = `translateX(${dragX}px) translateY(${dragY}px) rotate(${rot}deg)`;
+      }
+
+      function onEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        const card = getTop(); if (!card) return;
+        card.classList.remove('is-dragging');
+        if (Math.abs(dragX) > THRESHOLD) {
+          const flyX = dragX > 0 ? '150%' : '-150%';
+          const rot  = dragX > 0 ? '25deg' : '-25deg';
+          card.style.transition = 'transform 0.4s ease-in, opacity 0.35s ease-in';
+          card.style.transform  = `translateX(${flyX}) rotate(${rot})`;
+          card.style.opacity    = '0';
+          setTimeout(() => {
+            card.style.display = 'none';
+            current++;
+            updateStack(true);
+          }, 380);
+        } else {
+          card.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          card.style.transform  = '';
+          setTimeout(() => { card.style.transition = ''; }, 450);
+        }
+      }
+
+      slider.addEventListener('mousedown',  onStart);
+      slider.addEventListener('touchstart', onStart, { passive: true });
+      window.addEventListener('mousemove',  onMove);
+      window.addEventListener('touchmove',  onMove, { passive: false });
+      window.addEventListener('mouseup',    onEnd);
+      window.addEventListener('touchend',   onEnd);
     }
   </script>
 
