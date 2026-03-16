@@ -91,7 +91,7 @@ function extractItem(item) {
   const title       = item.title?.['#text'] ?? item.title ?? '';
   const description = item.description?.['#text'] ?? item.description ?? item.summary ?? '';
   const link        = item.link?.['@_href'] ?? item.link ?? item.guid ?? '';
-  const pubDate     = item.pubDate ?? item.updated ?? item.published ?? '';
+  const pubDate     = item.pubDate ?? item['dc:date'] ?? item.updated ?? item.published ?? '';
   return { title: String(title).trim(), description: String(description).replace(/<[^>]+>/g, '').trim(), link: String(link).trim(), pubDate };
 }
 
@@ -109,7 +109,7 @@ async function summarize(client, title, description) {
 - HTMLタグ以外の説明・前置きは不要。要約文のみ返してください。
 
 タイトル：${title}
-内容：${description.slice(0, 500)}`;
+内容：${description ? description.slice(0, 500) : '（本文なし。タイトルから推測して要約してください）'}`;
 
   const res = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
