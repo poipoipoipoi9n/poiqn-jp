@@ -149,9 +149,10 @@ async function main() {
       let summary;
       try {
         summary = await summarize(client, title, description);
+        if (!summary) throw new Error('empty response');
       } catch (e) {
-        console.warn(`  Summary failed: ${e.message}`);
-        summary = description.slice(0, 120);
+        console.warn(`  Summary failed: ${e.message}`, e.status ?? '');
+        summary = description.slice(0, 120) || title;
       }
 
       articles.push({
