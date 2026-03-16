@@ -126,7 +126,7 @@ async function main() {
     articles:  articles.slice(0, MAX_ARTICLES),
   };
 
-  writeFileSync('../poiqn-jp/news.json', JSON.stringify(output, null, 2), 'utf-8');
+  writeFileSync('../docs/news.json', JSON.stringify(output, null, 2), 'utf-8');
   console.log(`Done. ${output.articles.length} articles saved to news.json`);
 }
 
