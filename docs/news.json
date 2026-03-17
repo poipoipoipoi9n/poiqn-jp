@@ -1,6 +1,15 @@
 {
-  "updatedAt": "2026-03-17T14:09:51.219Z",
+  "updatedAt": "2026-03-17T14:56:41.713Z",
   "articles": [
+    {
+      "id": "3b4ae458-01c4-4350-9aca-f6ea6858f9e9",
+      "title": "アメリカのテロ対策トップが辞任しました",
+      "summary": "<ul><li>アメリカのテロ対策の責任者が仕事をやめたんだよ</li><li>イランとの戦争に反対だからやめると言ったんだって</li><li>イランのことで辞めた人の中で一番立場が高い人なんだよ</li></ul>",
+      "source": "Reuters",
+      "url": "https://jp.reuters.com/world/security/RYSZGDJWENL6TIIIKNNMOHPUQQ-2026-03-17/",
+      "category": "政治",
+      "publishedAt": "2026-03-17"
+    },
     {
       "id": "741f5363-08bd-46b4-b815-ccf5d3552005",
       "title": "外務省 和平調停に取り組む部署を新設 “和平実現に積極関与”",
