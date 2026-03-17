@@ -509,12 +509,14 @@
       border-radius: 20px;
     }
     .news-empty {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 380px;
       gap: 16px;
+      z-index: 0;
     }
     .news-empty-msg {
       font-size: 1rem;
@@ -537,15 +539,6 @@
       border-color: var(--accent);
     }
 
-    /* カウンター */
-    .news-counter {
-      text-align: center;
-      font-family: 'Silkscreen', var(--font);
-      font-size: 0.79rem;
-      color: var(--gray-mid);
-      margin-top: 14px;
-      letter-spacing: 0.05em;
-    }
 
     .news-card {
       position: absolute;
@@ -661,6 +654,12 @@
     .news-source-btn:hover {
       border-color: var(--accent);
       background: var(--accent-pale);
+    }
+    .news-stamps-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
     }
     .news-stamps {
       display: flex;
@@ -906,14 +905,14 @@
     <h2 id="news-heading" class="section-label news-label">NEWS</h2>
 
     <div class="news-stack-wrap">
-      <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧"></div>
-      <div class="news-empty" id="news-empty" hidden>
-        <p class="news-empty-msg">全部読んだよ！</p>
-        <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
+      <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
+        <div class="news-empty" id="news-empty">
+          <p class="news-empty-msg">全部読んだよ！</p>
+          <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
+        </div>
       </div>
     </div>
 
-    <div class="news-counter" id="news-counter" aria-live="polite"></div>
 
   </section>
 
@@ -1228,14 +1227,25 @@
               <span class="news-read-label">もっとくわしく！</span>
               <a class="news-source-btn" href="${a.url}" target="_blank" rel="noopener" itemprop="url">出典：${a.source}</a>
             </div>
-            <div class="news-stamps" role="group" aria-label="この記事への感情">
+            <div class="news-stamps-wrap">
+              <span class="news-read-label">どう思った？</span>
+              <div class="news-stamps" role="group" aria-label="この記事への感情">
               <button class="news-stamp-mini" data-emotion="0" onclick="miniStamp(this)" aria-pressed="false"></button>
               <button class="news-stamp-mini" data-emotion="1" onclick="miniStamp(this)" aria-pressed="false"></button>
               <button class="news-stamp-mini" data-emotion="2" onclick="miniStamp(this)" aria-pressed="false"></button>
+              </div>
             </div>
           </div>
         </article>
       `).join('');
+
+      // news-empty を最背面に再挿入
+      slider.insertAdjacentHTML('afterbegin', `
+        <div class="news-empty" id="news-empty">
+          <p class="news-empty-msg">全部読んだよ！</p>
+          <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
+        </div>
+      `);
 
       // 感情アイコン描画
       slider.querySelectorAll('.news-stamp-mini[data-emotion]').forEach(btn => {
@@ -1255,8 +1265,7 @@
     loadNews();
 
     // ── Tinder式カードスタック ──
-    const counterEl = document.getElementById('news-counter');
-    const emptyEl   = document.getElementById('news-empty');
+    const sliderEl  = document.getElementById('news-slider');
     let cardsList = [];
     let current   = 0;
 
@@ -1279,14 +1288,6 @@
         else if (pos === 2) card.style.transform = 'scale(0.92) translateY(20px)';
         else                card.style.transform = 'scale(0.88) translateY(30px)';
       });
-      const remaining = total - current;
-      if (remaining > 0) {
-        emptyEl.hidden   = true;
-        counterEl.textContent = `${current + 1} / ${total}`;
-      } else {
-        emptyEl.hidden   = false;
-        counterEl.textContent = '';
-      }
     }
 
     function resetCards() {
