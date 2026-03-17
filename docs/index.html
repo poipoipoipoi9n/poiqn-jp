@@ -587,6 +587,19 @@
       line-height: 1.8;
       margin-bottom: 14px;
     }
+    .news-body ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0;
+      margin: 0;
+    }
+    .news-body ul li::before {
+      content: '・';
+      color: var(--accent);
+      font-weight: 700;
+    }
     .news-body .subj {
       text-decoration: underline;
       text-decoration-color: var(--accent);

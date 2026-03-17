@@ -99,17 +99,20 @@ function extractItem(item) {
 // Claude で要約
 // =============================================
 async function summarize(client, title, description) {
-  const prompt = `以下のニュースを中学生でも分かる平易な日本語で2〜3文に要約してください。
-難しい政治用語は避け、「わたしたちの生活にどう関係するか」という視点で書いてください。
+  const prompt = `以下のニュース記事から、起きた出来事の事実だけを抽出し、小学校高学年にもわかる言葉で箇条書き3行にまとめてください。
 
-【出力ルール】
-- 各文の主語（〜は、〜が にあたる部分）を <span class="subj">主語</span> で囲む
-- 各文の述語（文末の動詞・形容詞にあたる部分）を <span class="pred">述語</span> で囲む
-- 「誰と・誰に・何と」にあたる相手・対象（〜と、〜に）を <span class="partner">相手</span> で囲む
-- HTMLタグ以外の説明・前置きは不要。要約文のみ返してください。
+ルール：
+・元記事の言葉や表現をそのまま使わない
+・意見・論評・予測は含めない（事実のみ）
+・難しい言葉は使わない
+・一行30文字以内
+・語尾は「〜だよ」「〜なんだって」など話しかける口調で
+
+出力形式（このHTMLのみ返してください。説明不要）：
+<ul><li>1行目</li><li>2行目</li><li>3行目</li></ul>
 
 タイトル：${title}
-内容：${description ? description.slice(0, 500) : '（本文なし。タイトルから推測して要約してください）'}`;
+内容：${description ? description.slice(0, 500) : '（本文なし。タイトルから推測してください）'}`;
 
   const res = await client.messages.create({
     model: 'claude-haiku-4-5-20251001',
