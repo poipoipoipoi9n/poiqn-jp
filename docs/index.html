@@ -717,76 +717,58 @@
       border-radius: 4px;
       font-weight: 700;
     }
-    .about-prompt {
+    .about-flow {
       margin-top: 40px;
       text-align: left;
-      background: #0f0f0f;
-      border-radius: 12px;
-      overflow: hidden;
-      font-family: 'Courier New', Courier, monospace;
-    }
-    .about-prompt-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
-      background: #2a2a2a;
-    }
-    .about-prompt-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .about-prompt-dot:nth-child(1) { background: #ff5f57; }
-    .about-prompt-dot:nth-child(2) { background: #febc2e; }
-    .about-prompt-dot:nth-child(3) { background: #28c840; }
-    .about-prompt-bar-title {
-      flex: 1;
-      text-align: center;
-      font-size: 0.71rem;
-      color: #888;
-      letter-spacing: 0.05em;
-    }
-    .about-prompt-body {
-      padding: 20px 20px 24px;
-    }
-    .about-prompt-steps {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      list-style: none;
     }
-    .about-prompt-step {
+    .about-flow-step {
       display: flex;
-      gap: 10px;
+      gap: 16px;
       align-items: flex-start;
-      font-size: 0.82rem;
-      line-height: 1.7;
-      color: #d4d4d4;
     }
-    .about-prompt-prefix {
-      color: #28c840;
+    .about-flow-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       flex-shrink: 0;
+    }
+    .about-flow-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0;
     }
-    .about-prompt-label {
-      display: inline-block;
-      font-size: 0.71rem;
+    .about-flow-line {
+      width: 1.5px;
+      flex: 1;
+      min-height: 20px;
+      background: var(--black);
+      opacity: 0.15;
+      margin: 4px 0;
+    }
+    .about-flow-step:last-child .about-flow-line {
+      display: none;
+    }
+    .about-flow-content {
+      padding-bottom: 28px;
+    }
+    .about-flow-title {
+      font-size: 0.85rem;
       font-weight: 700;
-      color: #a78bfa;
-      margin-right: 4px;
+      line-height: 28px;
+      margin-bottom: 2px;
     }
-    .about-prompt-cursor {
-      display: inline-block;
-      width: 8px;
-      height: 1em;
-      background: #d4d4d4;
-      vertical-align: text-bottom;
-      animation: blink 1.1s step-end infinite;
-    }
-    @keyframes blink {
-      50% { opacity: 0; }
+    .about-flow-desc {
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.6;
     }
 
     /* ── FOOTER ── */
@@ -974,36 +956,46 @@
       ポイくんは、あなたと一緒に育ちます。
     </p>
 
-    <div class="about-prompt" aria-label="ニュース生成のしくみ">
-      <div class="about-prompt-bar">
-        <span class="about-prompt-dot"></span>
-        <span class="about-prompt-dot"></span>
-        <span class="about-prompt-dot"></span>
-        <span class="about-prompt-bar-title">how-news-is-made.sh</span>
+    <div class="about-flow" aria-label="ニュース生成のしくみ">
+      <div class="about-flow-step">
+        <div class="about-flow-left">
+          <div class="about-flow-num">1</div>
+          <div class="about-flow-line"></div>
+        </div>
+        <div class="about-flow-content">
+          <div class="about-flow-title">ニュースを読む</div>
+          <div class="about-flow-desc">管理者が報道記事を読み、起きた事実だけをメモにまとめる</div>
+        </div>
       </div>
-      <div class="about-prompt-body">
-        <ol class="about-prompt-steps">
-          <li class="about-prompt-step">
-            <span class="about-prompt-prefix">$&nbsp;</span>
-            <span><span class="about-prompt-label">[fetch]</span>時事通信・47NEWS・Reuters の RSS を1日4回、自動で収集</span>
-          </li>
-          <li class="about-prompt-step">
-            <span class="about-prompt-prefix">$&nbsp;</span>
-            <span><span class="about-prompt-label">[filter]</span>法案・税・外交・首相発言・戦争・デモなど 60+ キーワードで絞り込み</span>
-          </li>
-          <li class="about-prompt-step">
-            <span class="about-prompt-prefix">$&nbsp;</span>
-            <span><span class="about-prompt-label">[prompt]</span>「中学生でも分かる言葉で、わたしたちの生活にどう関係するか」の視点で Claude AI が2〜3文に要約</span>
-          </li>
-          <li class="about-prompt-step">
-            <span class="about-prompt-prefix">$&nbsp;</span>
-            <span><span class="about-prompt-label">[highlight]</span>主語・述語・相手をAIが自動識別して色付け</span>
-          </li>
-          <li class="about-prompt-step">
-            <span class="about-prompt-prefix">&gt;&nbsp;</span>
-            <span>done<span class="about-prompt-cursor"></span></span>
-          </li>
-        </ol>
+      <div class="about-flow-step">
+        <div class="about-flow-left">
+          <div class="about-flow-num">2</div>
+          <div class="about-flow-line"></div>
+        </div>
+        <div class="about-flow-content">
+          <div class="about-flow-title">ファクトを入力する</div>
+          <div class="about-flow-desc">タイトル・出典・事実をフォームに入力して送信</div>
+        </div>
+      </div>
+      <div class="about-flow-step">
+        <div class="about-flow-left">
+          <div class="about-flow-num">3</div>
+          <div class="about-flow-line"></div>
+        </div>
+        <div class="about-flow-content">
+          <div class="about-flow-title">AIが言葉を整える</div>
+          <div class="about-flow-desc">Claude AIが小学校高学年でも読める言葉で箇条書きに整形する</div>
+        </div>
+      </div>
+      <div class="about-flow-step">
+        <div class="about-flow-left">
+          <div class="about-flow-num">4</div>
+          <div class="about-flow-line"></div>
+        </div>
+        <div class="about-flow-content">
+          <div class="about-flow-title">サイトに公開される</div>
+          <div class="about-flow-desc">自動でpoiqn.jpに反映される</div>
+        </div>
       </div>
     </div>
   </section>
