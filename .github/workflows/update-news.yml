@@ -1,9 +1,7 @@
 name: Update News
 
 on:
-  schedule:
-    - cron: '0 0,6,12,18 * * *'   # JST 9, 15, 21, 3時（UTC+9）
-  workflow_dispatch:                 # 手動実行ボタン
+  workflow_dispatch:                 # 手動実行のみ（自動スケジュール停止）
 
 jobs:
   update:
