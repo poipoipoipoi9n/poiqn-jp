@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { randomUUID } from 'crypto';
+
+const MAX_ARTICLES = 6;
 
 // =============================================
 // カテゴリ推定
@@ -50,15 +52,44 @@ ${facts}`;
 }
 
 // =============================================
+// 既存の news.json を読む
+// =============================================
+function loadExisting() {
+  const path = '../docs/news.json';
+  if (!existsSync(path)) return [];
+  try {
+    return JSON.parse(readFileSync(path, 'utf-8')).articles ?? [];
+  } catch {
+    return [];
+  }
+}
+
+// =============================================
 // メイン
 // =============================================
 async function main() {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  // input.json を読み込む
-  const inputs = JSON.parse(readFileSync('./input.json', 'utf-8'));
-  const articles = [];
+  // ── モード判定 ──────────────────────────────
+  // 環境変数があれば「1件追加モード」（GitHub Actions フォーム）
+  // なければ input.json から「バッチモード」（ローカル）
+  let inputs;
+  if (process.env.ARTICLE_TITLE) {
+    console.log('Mode: single (from workflow inputs)');
+    inputs = [{
+      title:       process.env.ARTICLE_TITLE,
+      source:      process.env.ARTICLE_SOURCE,
+      url:         process.env.ARTICLE_URL,
+      publishedAt: process.env.ARTICLE_PUBLISHED_AT || new Date().toISOString().slice(0, 10),
+      facts:       process.env.ARTICLE_FACTS,
+    }];
+  } else {
+    console.log('Mode: batch (from input.json)');
+    inputs = JSON.parse(readFileSync('./input.json', 'utf-8'));
+  }
 
+  // ── 生成 ────────────────────────────────────
+  const newArticles = [];
   for (const entry of inputs) {
     const { title, source, url, publishedAt = '', facts } = entry;
     if (!title || !facts) {
@@ -76,7 +107,7 @@ async function main() {
       summary = facts.slice(0, 120);
     }
 
-    articles.push({
+    newArticles.push({
       id:          randomUUID(),
       title,
       summary,
@@ -87,13 +118,17 @@ async function main() {
     });
   }
 
+  // ── 既存記事と合算して最大6件 ────────────────
+  const existing  = loadExisting();
+  const merged    = [...newArticles, ...existing].slice(0, MAX_ARTICLES);
+
   const output = {
     updatedAt: new Date().toISOString(),
-    articles,
+    articles:  merged,
   };
 
   writeFileSync('../docs/news.json', JSON.stringify(output, null, 2), 'utf-8');
-  console.log(`Done. ${output.articles.length} articles saved to news.json`);
+  console.log(`Done. ${merged.length} articles saved (${newArticles.length} new).`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

@@ -1,7 +1,24 @@
 name: Update News
 
 on:
-  workflow_dispatch:                 # 手動実行のみ（自動スケジュール停止）
+  workflow_dispatch:
+    inputs:
+      title:
+        description: '記事タイトル'
+        required: true
+      source:
+        description: '出典元（例: NHK, Reuters）'
+        required: true
+      url:
+        description: '元記事URL'
+        required: true
+      publishedAt:
+        description: '公開日（例: 2026-03-17）'
+        required: false
+        default: ''
+      facts:
+        description: 'ファクト（箇条書きでOK）'
+        required: true
 
 jobs:
   update:
@@ -24,16 +41,21 @@ jobs:
         working-directory: scripts
         run: npm install
 
-      - name: Fetch & summarize news
+      - name: Generate & append news
         working-directory: scripts
         run: node update-news.js
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ARTICLE_TITLE: ${{ inputs.title }}
+          ARTICLE_SOURCE: ${{ inputs.source }}
+          ARTICLE_URL: ${{ inputs.url }}
+          ARTICLE_PUBLISHED_AT: ${{ inputs.publishedAt }}
+          ARTICLE_FACTS: ${{ inputs.facts }}
 
       - name: Commit news.json
         run: |
           git config user.name  "poiqn-bot"
           git config user.email "bot@poiqn.jp"
           git add docs/news.json
-          git diff --staged --quiet || git commit -m "chore: update news [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git diff --staged --quiet || git commit -m "chore: add news [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
