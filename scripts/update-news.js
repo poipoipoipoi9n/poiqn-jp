@@ -7,9 +7,9 @@ import { randomUUID } from 'crypto';
 // ニュースソース設定
 // =============================================
 const RSS_FEEDS = [
-  { name: '時事通信', url: 'https://www.jiji.com/rss/pol.rss' },
-  { name: '47NEWS',   url: 'https://assets.wor.jp/rss/rdf/ynnews/news.rdf' },
-  { name: 'Reuters',  url: 'https://feeds.reuters.com/reuters/JPpoliticsNews' },
+  { name: 'NHK',     url: 'https://www3.nhk.or.jp/rss/news/cat4.xml' },  // 政治
+  { name: '47NEWS',  url: 'https://assets.wor.jp/rss/rdf/ynnews/news.rdf' },
+  { name: 'Reuters', url: 'https://feeds.reuters.com/reuters/jp/topNews' },
 ];
 
 // 1ソースから取得する最大記事数
