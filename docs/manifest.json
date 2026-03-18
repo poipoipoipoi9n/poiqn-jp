@@ -1,0 +1,15 @@
+{
+  "name": "poiqn",
+  "short_name": "poiqn",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ededed",
+  "theme_color": "#1A1A1A",
+  "icons": [
+    {
+      "src": "img/icon.PNG",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
