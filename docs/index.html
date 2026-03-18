@@ -1408,6 +1408,19 @@
     }
     renderEmotions();
 
+    // 日付リセット（JST 0:00）
+    function getTodayJST() {
+      return new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    }
+    db.ref('date').once('value', snap => {
+      const stored = snap.val();
+      const today  = getTodayJST();
+      if (stored !== today) {
+        const reset = { date: today, counts: { 0: 0, 1: 0, 2: 0 } };
+        db.ref('/').update(reset);
+      }
+    });
+
     // Firebase リアルタイムリスナー — カウント同期
     EMOTIONS.forEach((_, idx) => {
       db.ref(`counts/${idx}`).on('value', snap => {
