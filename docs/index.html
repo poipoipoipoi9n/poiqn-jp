@@ -611,11 +611,20 @@
 
     .news-egg {
       position: absolute;
-      top: calc(20dvh - 36px);
+      top: calc(14dvh - 36px);
       left: 50%;
       transform: translateX(-50%);
       width: 72px;
       height: auto;
+      cursor: pointer;
+    }
+    .news-egg.jump {
+      animation: egg-jump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes egg-jump {
+      0%   { transform: translateX(-50%) translateY(0); }
+      30%  { transform: translateX(-50%) translateY(-8px); }
+      100% { transform: translateX(-50%) translateY(0); }
     }
 
     /* カードスタック */
@@ -1224,7 +1233,7 @@
     <!-- NEWS -->
     <section class="news-section" id="news" aria-labelledby="news-heading">
       <h2 id="news-heading" class="section-label news-label">NEWS</h2>
-      <img class="news-egg" src="img/egg_kyoro.GIF" alt="" aria-hidden="true">
+      <img class="news-egg" src="img/egg_kyoro.GIF" alt="" aria-hidden="true" onclick="this.classList.remove('jump'); void this.offsetWidth; this.classList.add('jump');">
 
       <div class="news-stack-wrap">
         <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
