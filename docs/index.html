@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,9 +37,17 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Barlow+Condensed:wght@400;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Barlow+Condensed:wght@400;700&family=Silkscreen:wght@400;700&display=swap"
+    rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --black: #1A1A1A;
@@ -51,7 +60,10 @@
       --font: 'Noto Sans JP', sans-serif;
     }
 
-    html { scroll-behavior: smooth; font-size: 1rem; }
+    html {
+      scroll-behavior: smooth;
+      font-size: 1rem;
+    }
 
     body {
       font-family: var(--font);
@@ -70,7 +82,7 @@
       padding: 20px 32px;
       position: sticky;
       top: 0;
-      background: rgba(250,250,250,0.9);
+      background: rgba(250, 250, 250, 0.9);
       backdrop-filter: blur(8px);
       z-index: 100;
       border-bottom: 1px solid var(--black);
@@ -90,12 +102,13 @@
       left: 0;
       right: 0;
       display: flex;
-      background: rgba(250,250,250,0.95);
+      background: rgba(250, 250, 250, 0.95);
       backdrop-filter: blur(8px);
       border-top: 1px solid var(--black);
       z-index: 100;
       padding-bottom: env(safe-area-inset-bottom);
     }
+
     .bottom-nav a {
       flex: 1;
       display: flex;
@@ -110,8 +123,12 @@
       font-weight: 400;
       transition: color 0.2s;
     }
+
     .bottom-nav a:hover,
-    .bottom-nav a.active { color: var(--black); }
+    .bottom-nav a.active {
+      color: var(--black);
+    }
+
     .bottom-nav svg {
       width: 22px;
       height: 22px;
@@ -141,15 +158,18 @@
       cursor: pointer;
       z-index: 2;
     }
+
     .poikun-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+      transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
     }
+
     .poikun-wrap:hover img {
       transform: translateY(-6px) scale(1.04);
     }
+
     .poikun-bubble {
       position: absolute;
       top: -12px;
@@ -165,29 +185,34 @@
       line-height: 1;
       transition: opacity 0.4s ease;
     }
+
     .poikun-bubble::after {
       content: '';
       position: absolute;
       bottom: -7px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0; height: 0;
+      width: 0;
+      height: 0;
       border-left: 6px solid transparent;
       border-right: 6px solid transparent;
       border-top: 7px solid var(--black);
     }
+
     .poikun-bubble::before {
       content: '';
       position: absolute;
       bottom: -5px;
       left: 50%;
       transform: translateX(-50%);
-      width: 0; height: 0;
+      width: 0;
+      height: 0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-top: 6px solid white;
       z-index: 1;
     }
+
     .hero[data-state="2"] .poikun-bubble {
       opacity: 0;
       pointer-events: none;
@@ -204,8 +229,12 @@
       padding: 24px 24px 80px;
       transition: opacity 0.45s ease, transform 0.45s ease;
     }
+
     /* 卵の高さ分スペーサー */
-    .panel-spacer { height: 80px; flex-shrink: 0; }
+    .panel-spacer {
+      height: 80px;
+      flex-shrink: 0;
+    }
 
     /* パネル1 */
     .hero-panel-1 {
@@ -214,6 +243,7 @@
       justify-content: flex-start;
       padding-top: calc(50vh + 4px);
     }
+
     .hero[data-state="2"] .hero-panel-1 {
       opacity: 0;
       transform: translateY(-24px);
@@ -228,6 +258,7 @@
       justify-content: flex-end;
       padding-bottom: 25vh;
     }
+
     .hero[data-state="2"] .hero-panel-2 {
       opacity: 1;
       transform: translateY(0);
@@ -237,10 +268,12 @@
     /* ── 吹き出しバブル ── */
     .news-bubbles {
       position: absolute;
-      inset: 0;
+      inset: 0 0 2rem 0;
       pointer-events: none;
       z-index: 1;
+      overflow: hidden;
     }
+
     .news-bubble {
       position: absolute;
       left: var(--x);
@@ -258,13 +291,22 @@
       opacity: 0;
       transform: scale(0) rotate(-8deg);
     }
+
     .hero-panel-2.playing .news-bubble {
-      animation: bubble-pop 0.38s cubic-bezier(.34,1.56,.64,1) forwards;
+      animation: bubble-pop 0.38s cubic-bezier(.34, 1.56, .64, 1) forwards;
       animation-delay: calc(var(--i) * 0.13s);
     }
+
     @keyframes bubble-pop {
-      from { opacity: 0; transform: scale(0) rotate(-8deg); }
-      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+      from {
+        opacity: 0;
+        transform: scale(0) rotate(-8deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
     }
 
     /* スタンプは最初は非表示、phase3で表示 */
@@ -273,9 +315,21 @@
       opacity: 0;
       transition: opacity .8s ease;
     }
+
     .hero-panel-2.stamps-visible .stamps,
     .hero-panel-2.stamps-visible .stamps-hint {
       opacity: 1;
+    }
+
+    .hero-panel-2 .swipe-hint {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .8s ease;
+    }
+
+    .hero-panel-2.stamp-pressed .swipe-hint {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     /* 日付 */
@@ -298,9 +352,18 @@
       padding: 4px 10px;
       z-index: 100;
     }
-    .eyebrow-year { font-size: 1rem; }
-    .eyebrow-date { font-size: 1rem; }
-    .eyebrow-year::after { content: '/'; }
+
+    .eyebrow-year {
+      font-size: 1rem;
+    }
+
+    .eyebrow-date {
+      font-size: 1rem;
+    }
+
+    .eyebrow-year::after {
+      content: '/';
+    }
 
     .hero-title {
       font-size: clamp(1rem, 4.5vw, 2.4rem);
@@ -309,12 +372,14 @@
       letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
+
     .hero-logo {
       height: 2em;
       width: auto;
       display: block;
       margin: .5em 0;
     }
+
     .hero-sub {
       font-size: .9rem;
       font-weight: 500;
@@ -340,14 +405,26 @@
       cursor: pointer;
       padding: 0;
     }
+
     .swipe-hint svg {
-      width: 16px; height: 16px;
-      stroke: currentColor; fill: none;
-      stroke-width: 2; stroke-linecap: round;
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
     }
+
     @keyframes nudge {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
     }
 
     /* ── EMOTION STAMPS ── */
@@ -368,32 +445,50 @@
       border-radius: 10px;
       padding: 1rem .5rem;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+      transition: all 0.2s cubic-bezier(.34, 1.56, .64, 1);
       font-weight: 700;
       font-size: 0.70em;
       color: var(--black);
       user-select: none;
     }
+
     .stamp:hover {
       border-color: var(--accent);
       background: var(--accent-pale);
       transform: translateY(-3px) scale(1.05);
     }
+
     .stamp.pressed {
       background: var(--accent);
       border-color: var(--accent);
       color: white;
       transform: scale(0.95);
     }
-    .stamp-icon { font-size: 1.57rem; line-height: 0; }
-    .stamp-icon img { width: 28px; height: 28px; object-fit: contain; }
-    .stamp-label { white-space: nowrap; }
+
+    .stamp-icon {
+      font-size: 1.57rem;
+      line-height: 0;
+    }
+
+    .stamp-icon img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .stamp-label {
+      white-space: nowrap;
+    }
+
     .stamp-count {
       font-size: 0.79rem;
       color: var(--gray-mid);
       margin-top: 2px;
     }
-    .stamp.pressed .stamp-count { color: rgba(255,255,255,0.8); }
+
+    .stamp.pressed .stamp-count {
+      color: rgba(255, 255, 255, 0.8);
+    }
 
     .stamps-hint {
       margin: 0 0 1rem;
@@ -407,9 +502,9 @@
       font-weight: 700;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--gray-mid);
       margin-bottom: 20px;
     }
+
     .news-label {
       font-family: 'Silkscreen', sans-serif;
       font-weight: 400;
@@ -431,15 +526,11 @@
       height: 200px;
       margin: 0 auto 24px;
     }
+
     .planet-wrap img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      animation: rotate 300s linear infinite;
-    }
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
 
     .planet-stats {
@@ -447,54 +538,84 @@
       gap: 24px;
       margin-top: 8px;
     }
+
     .planet-stat {
       text-align: center;
     }
+
     .planet-stat-num {
       font-size: 2rem;
       font-weight: 900;
       letter-spacing: -0.03em;
     }
+
     .planet-stat-label {
       font-size: 0.79rem;
-      color: var(--gray-mid);
-      font-weight: 700;
       margin-top: 2px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
-    .planet-stat-label img { width: 20px; height: 20px; object-fit: contain; }
+
+    .planet-stat-label img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
     .planet-reset {
       font-size: 0.79rem;
-      color: var(--gray-mid);
+      color: var(--black);
       margin-top: 16px;
-      font-weight: 500;
+      font-weight: 300;
     }
+
     .planet-reset span {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
+      display: none;
       margin-right: 5px;
       vertical-align: middle;
       animation: pulse 1.5s infinite;
     }
+
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
     }
 
     /* ── NEWS ── */
     .news-section {
-      padding: 60px 0;
-      border-top: 1px solid var(--black);
-      overflow: hidden;
-    }
-    .news-section > h2 {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       padding: 0 24px;
-      margin-bottom: 20px;
+      overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .news-section>h2 {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+    }
+
+    .news-egg {
+      position: absolute;
+      top: calc(20dvh - 36px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: auto;
     }
 
     /* カードスタック */
@@ -502,41 +623,12 @@
       position: relative;
       padding: 0 24px;
     }
+
     .news-slider {
       position: relative;
       height: 380px;
       touch-action: none;
       border-radius: 20px;
-    }
-    .news-empty {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      z-index: 0;
-    }
-    .news-empty-msg {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--black);
-    }
-    .news-reset-btn {
-      font-family: var(--font);
-      font-size: 0.86rem;
-      font-weight: 700;
-      padding: 10px 28px;
-      border-radius: 40px;
-      border: 1px solid var(--black);
-      cursor: pointer;
-      background: white;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .news-reset-btn:hover {
-      background: var(--accent-pale);
-      border-color: var(--accent);
     }
 
 
@@ -555,7 +647,29 @@
       display: flex;
       flex-direction: column;
     }
-    .news-card.is-dragging { cursor: grabbing; }
+
+    .news-card.is-dragging {
+      cursor: grabbing;
+    }
+
+    .news-card.hint-anim {
+      animation: card-hint 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes card-hint {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      40% {
+        transform: translateX(10px) rotate(2deg);
+      }
+
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
     .news-tag {
       display: inline-block;
       font-size: 0.71rem;
@@ -567,12 +681,14 @@
       border-radius: 20px;
       margin-bottom: 12px;
     }
+
     .news-title {
       font-size: 1.14rem;
       font-weight: 700;
       line-height: 1.5;
       margin-bottom: 10px;
     }
+
     .news-body {
       flex: 1;
       font-size: 14px;
@@ -580,6 +696,7 @@
       line-height: 1.8;
       margin-bottom: 14px;
     }
+
     .news-body ul {
       list-style-type: circle;
       display: flex;
@@ -588,27 +705,32 @@
       padding-left: 2.5em;
       margin: 0 0 0 -1em;
     }
+
     .news-body .subj {
       text-decoration: underline;
       text-decoration-color: var(--accent);
       text-decoration-thickness: 2px;
       text-underline-offset: 3px;
     }
+
     .news-body .pred {
       background: linear-gradient(transparent 55%, rgba(167, 139, 250, 0.35) 55%);
     }
+
     .news-body .partner {
       text-decoration: underline wavy;
       text-decoration-color: var(--accent);
       text-decoration-thickness: 2px;
       text-underline-offset: 3px;
     }
+
     .news-card-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
       margin-bottom: 12px;
     }
+
     .news-date {
       font-family: 'Silkscreen', var(--font);
       font-size: 0.71rem;
@@ -617,6 +739,7 @@
       white-space: nowrap;
       padding-top: 2px;
     }
+
     .news-footer {
       display: flex;
       align-items: flex-end;
@@ -624,19 +747,28 @@
       padding-top: 14px;
       width: 100%;
     }
-    .news-source-wrap { margin-right: auto; }
-    .news-stamps { margin-left: auto; }
+
+    .news-source-wrap {
+      margin-right: auto;
+    }
+
+    .news-stamps {
+      margin-left: auto;
+    }
+
     .news-source-wrap {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 4px;
     }
+
     .news-read-label {
       font-size: 0.71rem;
       color: var(--gray-dark);
       font-weight: 500;
     }
+
     .news-source-btn {
       display: inline-flex;
       align-items: center;
@@ -651,21 +783,25 @@
       transition: border-color 0.15s, background 0.15s;
       white-space: nowrap;
     }
+
     .news-source-btn:hover {
       border-color: var(--accent);
       background: var(--accent-pale);
     }
+
     .news-stamps-wrap {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: center;
       gap: 4px;
     }
+
     .news-stamps {
       display: flex;
       flex-direction: row;
       gap: 6px;
     }
+
     .news-stamp-mini {
       font-size: 0.86rem;
       padding: 4px 10px;
@@ -682,11 +818,18 @@
       gap: 4px;
       white-space: nowrap;
     }
-    .news-stamp-mini img { width: 18px; height: 18px; object-fit: contain; }
+
+    .news-stamp-mini img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
     .news-stamp-mini:hover {
       border-color: var(--accent);
       background: var(--accent-pale);
     }
+
     .news-stamp-mini.pressed {
       border-color: var(--accent);
       background: var(--accent);
@@ -694,6 +837,104 @@
     }
 
     /* ── ABOUT ── */
+    .about-bubble {
+      display: inline-block;
+      position: relative;
+      background: white;
+      border: 1px solid var(--black);
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      white-space: nowrap;
+      line-height: 1;
+      color: var(--black);
+      margin-bottom: 20px;
+    }
+
+    .about-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 7px solid var(--black);
+    }
+
+    .about-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid white;
+      z-index: 1;
+    }
+
+    .about-logo {
+      width: 150px;
+      height: auto;
+      display: block;
+      margin: 0 auto 8px;
+    }
+
+    .about-etymology {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 24px 0 8px;
+      flex-wrap: wrap;
+    }
+
+    .about-ety-word {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .about-ety-word--framed {
+      border: 1.5px solid var(--black);
+      padding: 6px 12px;
+    }
+
+    .about-ety-main {
+      font-family: 'Silkscreen', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    .about-ety-sub {
+      font-size: 0.68rem;
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    .about-ety-plus {
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--black);
+      margin-bottom: 12px;
+    }
+
+    .about-ety-tagline {
+      font-size: 0.8rem;
+      color: var(--black);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin: 2em 0 4em;
+    }
+
     .about-section {
       padding: 60px 24px;
       max-width: 500px;
@@ -702,12 +943,15 @@
       border-top: 1px solid var(--black);
       width: 100%;
     }
+
     .about-text {
+      padding: 0 0 3em;
       font-size: 0.93rem;
       color: var(--black);
       line-height: 2;
       font-weight: 500;
     }
+
     .about-highlight {
       display: inline-block;
       background: var(--accent);
@@ -716,24 +960,39 @@
       border-radius: 4px;
       font-weight: 700;
     }
-    .about-flow {
+
+    .about-flow-wrap {
       margin-top: 40px;
+      border: 4px double var(--black);
+      padding: 20px 20px 4px;
+    }
+    .about-flow-heading {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .about-flow {
+      margin-top: 0;
       text-align: left;
       display: flex;
       flex-direction: column;
     }
+
     .about-flow-step {
       display: flex;
       gap: 16px;
       align-items: flex-start;
     }
+
     .about-flow-left {
       display: flex;
       flex-direction: column;
       align-items: center;
       flex-shrink: 0;
     }
+
     .about-flow-num {
+      background-color: var(--white);
       width: 28px;
       height: 28px;
       border-radius: 50%;
@@ -744,30 +1003,52 @@
       font-size: 0.78rem;
       font-weight: 700;
     }
-    .about-flow-line {
-      width: 1.5px;
-      flex: 1;
-      min-height: 20px;
-      background: var(--black);
-      opacity: 0.15;
-      margin: 4px 0;
-    }
+
+  .about-flow-line {
+    width: 1px;
+    flex: 1;
+    min-height: 60px;
+    background: var(--black);
+    margin: 4px 0;
+  }
     .about-flow-step:last-child .about-flow-line {
       display: none;
     }
+
     .about-flow-content {
       padding-bottom: 28px;
     }
+
     .about-flow-title {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: 700;
       line-height: 28px;
       margin-bottom: 2px;
     }
+
     .about-flow-desc {
       font-size: 0.8rem;
-      color: #666;
       line-height: 1.6;
+    }
+
+    /* ── FIXED NAV BTN ── */
+    .fixed-news-btn {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 14px 24px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font);
+      font-size: 0.93rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      z-index: 100;
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--black);
     }
 
     /* ── FOOTER ── */
@@ -776,7 +1057,6 @@
       text-align: center;
       border-top: 1px solid var(--black);
       font-size: 0.86rem;
-      color: var(--gray-mid);
       font-weight: 500;
     }
 
@@ -786,26 +1066,59 @@
       transform: translateY(20px);
       animation: fadeUp 0.6s ease forwards;
     }
+
     @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    .delay-1 { animation-delay: 0.1s; }
-    .delay-2 { animation-delay: 0.2s; }
-    .delay-3 { animation-delay: 0.35s; }
-    .delay-4 { animation-delay: 0.5s; }
-    .delay-5 { animation-delay: 0.65s; }
+
+    .delay-1 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-2 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-3 {
+      animation-delay: 0.35s;
+    }
+
+    .delay-4 {
+      animation-delay: 0.5s;
+    }
+
+    .delay-5 {
+      animation-delay: 0.65s;
+    }
 
     /* ── MOBILE ── */
-    body { padding-bottom: 70px; }
+    body {
+      padding-bottom: 70px;
+    }
 
     @media (max-width: 480px) {
-      header { padding: 16px 20px; }
-      .hero { padding: 60px 20px 48px; }
-      .stamps { gap: 8px; }
-      .stamp { padding: 12px 14px; }
+      header {
+        padding: 16px 20px;
+      }
+
+      .hero {
+        padding: 60px 20px 48px;
+      }
+
+      .stamps {
+        gap: 8px;
+      }
+
+      .stamp {
+        padding: 12px 14px;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- HEADER -->
@@ -831,175 +1144,197 @@
 
   <main id="main-content">
 
-  <!-- HERO -->
-  <section class="hero" data-state="1" aria-label="ポイくん イントロダクション">
+    <!-- HERO -->
+    <section class="hero" data-state="1" aria-label="ポイくん イントロダクション">
 
-    <!-- 卵（常に表示） -->
-    <div class="poikun-wrap">
-      <span class="poikun-bubble">なにが起きてるの？</span>
-      <img src="img/egg.PNG" alt="ポイくんの卵" role="img">
-    </div>
+      <!-- 卵（常に表示） -->
+      <div class="poikun-wrap">
+        <span class="poikun-bubble">なにが起きてるの？</span>
+        <img src="img/egg.PNG" alt="ポイくんの卵" role="img">
+      </div>
 
-    <!-- パネル1：日付・コピー・キャプション -->
-    <div class="hero-panel hero-panel-1">
-      <p class="hero-eyebrow"><span class="eyebrow-year"></span><span class="eyebrow-date"></span></p>
-      <h1 class="hero-title">
-        こんにちは、<br><img src="img/logo.png" alt="ポイくん" class="hero-logo">です。
-      </h1>
-      <p class="hero-sub">
-        政治のことを<br>感情から知っていく。
+      <!-- パネル1：日付・コピー・キャプション -->
+      <div class="hero-panel hero-panel-1">
+        <p class="hero-eyebrow"><span class="eyebrow-year"></span><span class="eyebrow-date"></span></p>
+        <h1 class="hero-title">
+          こんにちは、<br><img src="img/logo.png" alt="ポイくん" class="hero-logo">です。
+        </h1>
+        <p class="hero-sub">
+          政治のことを<br>感情から知っていく。
+        </p>
+        <button class="swipe-hint" onclick="setHeroState(2)" aria-label="次へ">
+          <svg viewBox="0 0 24 24">
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- パネル2：感情ボタン -->
+      <div class="hero-panel hero-panel-2" aria-label="今日の感情を選ぶ">
+        <div class="news-bubbles" id="news-bubbles">
+          <span class="news-bubble" style="--i:0;  --x:3%;  --y:5% ">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:1;  --x:52%; --y:8% ">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:2;  --x:28%; --y:3% ">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:3;  --x:68%; --y:14%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:4;  --x:2%;  --y:18%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:5;  --x:38%; --y:12%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:6;  --x:72%; --y:22%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:7;  --x:14%; --y:25%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:8;  --x:56%; --y:30%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:9;  --x:28%; --y:28%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:10; --x:4%;  --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:11; --x:80%; --y:10%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:12; --x:74%; --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:13; --x:18%; --y:40%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:14; --x:48%; --y:38%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:15; --x:22%; --y:16%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:16; --x:46%; --y:20%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:17; --x:64%; --y:42%">18歳から投票できるって、実際どういう意味があるの？</span>
+          <span class="news-bubble" style="--i:18; --x:8%;  --y:43%">物価がまた上がった。わたしの生活、どうなる？</span>
+          <span class="news-bubble" style="--i:19; --x:72%; --y:4% ">18歳から投票できるって、実際どういう意味があるの？</span>
+        </div>
+        <p class="stamps-hint">まずは今日のきもちを押してみる</p>
+        <div class="stamps">
+          <button class="stamp" data-emotion="0" onclick="pressStamp(this)" aria-pressed="false">
+            <span class="stamp-icon" aria-hidden="true"></span>
+            <span class="stamp-label"></span>
+            <span class="stamp-count" id="count-0" aria-live="polite" aria-atomic="true"></span>
+          </button>
+          <button class="stamp" data-emotion="1" onclick="pressStamp(this)" aria-pressed="false">
+            <span class="stamp-icon" aria-hidden="true"></span>
+            <span class="stamp-label"></span>
+            <span class="stamp-count" id="count-1" aria-live="polite" aria-atomic="true"></span>
+          </button>
+          <button class="stamp" data-emotion="2" onclick="pressStamp(this)" aria-pressed="false">
+            <span class="stamp-icon" aria-hidden="true"></span>
+            <span class="stamp-label"></span>
+            <span class="stamp-count" id="count-2" aria-live="polite" aria-atomic="true"></span>
+          </button>
+        </div>
+        <button class="swipe-hint" onclick="document.getElementById('news').scrollIntoView({behavior:'smooth'})"
+          aria-label="ニュースへ">
+          <svg viewBox="0 0 24 24">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- NEWS -->
+    <section class="news-section" id="news" aria-labelledby="news-heading">
+      <h2 id="news-heading" class="section-label news-label">NEWS</h2>
+      <img class="news-egg" src="img/egg_kyoro.GIF" alt="" aria-hidden="true">
+
+      <div class="news-stack-wrap">
+        <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
+        </div>
+      </div>
+
+
+    </section>
+
+    <!-- PLANET -->
+    <section class="planet-section" id="planet" aria-labelledby="planet-heading">
+      <h2 id="planet-heading" class="section-label fade-up">みんなのきもちを見てみる</h2>
+
+      <div class="planet-wrap fade-up delay-1" role="img" aria-label="ポイくんの惑星 — みんなの感情で育ちます">
+        <img src="img/planet.PNG" alt="今日の惑星 — ユーザーの感情を反映した惑星" aria-hidden="true">
+      </div>
+
+      <dl class="planet-stats fade-up delay-2" aria-label="今日の感情の集計">
+        <div class="planet-stat" data-emotion="0">
+          <dt class="planet-stat-label"></dt>
+          <dd class="planet-stat-num">0</dd>
+        </div>
+        <div class="planet-stat" data-emotion="1">
+          <dt class="planet-stat-label"></dt>
+          <dd class="planet-stat-num">0</dd>
+        </div>
+        <div class="planet-stat" data-emotion="2">
+          <dt class="planet-stat-label"></dt>
+          <dd class="planet-stat-num">0</dd>
+        </div>
+      </dl>
+
+      <p class="planet-reset fade-up delay-3">
+        <span aria-hidden="true"></span>毎日リセットされます
       </p>
-      <button class="swipe-hint" onclick="setHeroState(2)" aria-label="次へ">
-        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
-      </button>
-    </div>
+    </section>
 
-    <!-- パネル2：感情ボタン -->
-    <div class="hero-panel hero-panel-2" aria-label="今日の感情を選ぶ">
-      <div class="news-bubbles" id="news-bubbles">
-        <span class="news-bubble" style="--i:0;  --x:3%;  --y:5% ">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:1;  --x:52%; --y:8% ">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:2;  --x:28%; --y:3% ">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:3;  --x:68%; --y:14%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:4;  --x:2%;  --y:18%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:5;  --x:38%; --y:12%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:6;  --x:72%; --y:22%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:7;  --x:14%; --y:25%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:8;  --x:56%; --y:30%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:9;  --x:28%; --y:28%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:10; --x:4%;  --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:11; --x:80%; --y:10%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:12; --x:74%; --y:36%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:13; --x:18%; --y:40%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:14; --x:48%; --y:38%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:15; --x:22%; --y:16%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:16; --x:46%; --y:20%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:17; --x:64%; --y:42%">18歳から投票できるって、実際どういう意味があるの？</span>
-        <span class="news-bubble" style="--i:18; --x:8%;  --y:43%">物価がまた上がった。わたしの生活、どうなる？</span>
-        <span class="news-bubble" style="--i:19; --x:72%; --y:4% ">18歳から投票できるって、実際どういう意味があるの？</span>
-      </div>
-      <p class="stamps-hint">まずは今日のきもちを押してみる</p>
-      <div class="stamps">
-        <button class="stamp" data-emotion="0" onclick="pressStamp(this)" aria-pressed="false">
-          <span class="stamp-icon" aria-hidden="true"></span>
-          <span class="stamp-label"></span>
-          <span class="stamp-count" id="count-0" aria-live="polite" aria-atomic="true"></span>
-        </button>
-        <button class="stamp" data-emotion="1" onclick="pressStamp(this)" aria-pressed="false">
-          <span class="stamp-icon" aria-hidden="true"></span>
-          <span class="stamp-label"></span>
-          <span class="stamp-count" id="count-1" aria-live="polite" aria-atomic="true"></span>
-        </button>
-        <button class="stamp" data-emotion="2" onclick="pressStamp(this)" aria-pressed="false">
-          <span class="stamp-icon" aria-hidden="true"></span>
-          <span class="stamp-label"></span>
-          <span class="stamp-count" id="count-2" aria-live="polite" aria-atomic="true"></span>
-        </button>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- NEWS -->
-  <section class="news-section" id="news" aria-labelledby="news-heading">
-    <h2 id="news-heading" class="section-label news-label">NEWS</h2>
-
-    <div class="news-stack-wrap">
-      <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
-        <div class="news-empty" id="news-empty">
-          <p class="news-empty-msg">全部読んだよ！</p>
-          <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
+    <!-- ABOUT -->
+    <section class="about-section" id="about" aria-labelledby="about-heading">
+      <div class="about-bubble" id="about-heading" role="heading" aria-level="2">ポイくんって？</div>
+      <img src="img/logo.png" alt="ポイくん" class="about-logo">
+      <div class="about-etymology">
+        <div class="about-ety-word about-ety-word--framed">
+          <span class="about-ety-main">poil</span>
+          <span class="about-ety-sub">政治</span>
+        </div>
+        <span class="about-ety-plus">＋</span>
+        <div class="about-ety-word about-ety-word--framed">
+          <span class="about-ety-main">iku</span>
+          <span class="about-ety-sub">育</span>
         </div>
       </div>
-    </div>
+      <p class="about-ety-tagline">政治を知って、育っていく</p>
+      <p class="about-text">
+        ポイくんはAIと一緒に<br>
+        ①偏りすぎないように<br>②著作権に触れないように<small style="display:block;line-height:1.4">(ニュース文章をそのまま引用しない)</small>作っています。<br><br>
+        ポイくんは、あなたと一緒に育ちます。
+      </p>
 
-
-  </section>
-
-  <!-- PLANET -->
-  <section class="planet-section" id="planet" aria-labelledby="planet-heading">
-    <h2 id="planet-heading" class="section-label fade-up">みんなのきもちを見てみる</h2>
-
-    <div class="planet-wrap fade-up delay-1" role="img" aria-label="ポイくんの惑星 — みんなの感情で育ちます">
-      <img src="img/planet.PNG" alt="今日の惑星 — ユーザーの感情を反映した惑星" aria-hidden="true">
-    </div>
-
-    <dl class="planet-stats fade-up delay-2" aria-label="今日の感情の集計">
-      <div class="planet-stat" data-emotion="0">
-        <dt class="planet-stat-label"></dt>
-        <dd class="planet-stat-num">0</dd>
-      </div>
-      <div class="planet-stat" data-emotion="1">
-        <dt class="planet-stat-label"></dt>
-        <dd class="planet-stat-num">0</dd>
-      </div>
-      <div class="planet-stat" data-emotion="2">
-        <dt class="planet-stat-label"></dt>
-        <dd class="planet-stat-num">0</dd>
-      </div>
-    </dl>
-
-    <p class="planet-reset fade-up delay-3">
-      <span aria-hidden="true"></span>毎日リセットされます
-    </p>
-  </section>
-
-  <!-- ABOUT -->
-  <section class="about-section" id="about" aria-labelledby="about-heading">
-    <h2 id="about-heading" class="section-label">ポイくんって？</h2>
-    <p class="about-text">
-      このサイトは <span class="about-highlight">AIと一緒に</span><br>
-      偏らないように気をつけながら作っています。<br><br>
-      運営者も、学びながら作っています。<br>
-      おかしいと思ったら教えてください。<br><br>
-      ポイくんは、あなたと一緒に育ちます。
-    </p>
-
-    <div class="about-flow" aria-label="ニュース生成のしくみ">
-      <div class="about-flow-step">
-        <div class="about-flow-left">
-          <div class="about-flow-num">1</div>
-          <div class="about-flow-line"></div>
+      <div class="about-flow-wrap">
+        <p class="section-label news-label about-flow-heading">HOW POIQN IS MADE</p>
+        <div class="about-flow" aria-label="ニュース生成のしくみ">
+        <div class="about-flow-step">
+          <div class="about-flow-left">
+            <div class="about-flow-num">1</div>
+            <div class="about-flow-line"></div>
+          </div>
+          <div class="about-flow-content">
+            <div class="about-flow-title">ニュースを読む</div>
+            <div class="about-flow-desc">博士(ポイくんの親)が報道記事を読み、起きた事実だけをメモにまとめる</div>
+          </div>
         </div>
-        <div class="about-flow-content">
-          <div class="about-flow-title">ニュースを読む</div>
-          <div class="about-flow-desc">管理者が報道記事を読み、起きた事実だけをメモにまとめる</div>
+        <div class="about-flow-step">
+          <div class="about-flow-left">
+            <div class="about-flow-num">2</div>
+            <div class="about-flow-line"></div>
+          </div>
+          <div class="about-flow-content">
+            <div class="about-flow-title">ニュースカードにする</div>
+            <div class="about-flow-desc">タイトル・出典・事実をまとめる</div>
+          </div>
+        </div>
+        <div class="about-flow-step">
+          <div class="about-flow-left">
+            <div class="about-flow-num">3</div>
+            <div class="about-flow-line"></div>
+          </div>
+          <div class="about-flow-content">
+            <div class="about-flow-title">AIが事実チェック・言葉をととのえる</div>
+            <div class="about-flow-desc">正しい事実か？Claudeがチェックしたあと、読みやすい箇条書きの文章に変換</div>
+          </div>
+        </div>
+        <div class="about-flow-step">
+          <div class="about-flow-left">
+            <div class="about-flow-num">4</div>
+            <div class="about-flow-line"></div>
+          </div>
+          <div class="about-flow-content">
+            <div class="about-flow-title">サイトに公開される</div>
+            <div class="about-flow-desc">自動でpoiqn.jpに反映される</div>
+          </div>
         </div>
       </div>
-      <div class="about-flow-step">
-        <div class="about-flow-left">
-          <div class="about-flow-num">2</div>
-          <div class="about-flow-line"></div>
-        </div>
-        <div class="about-flow-content">
-          <div class="about-flow-title">ファクトを入力する</div>
-          <div class="about-flow-desc">タイトル・出典・事実をフォームに入力して送信</div>
-        </div>
       </div>
-      <div class="about-flow-step">
-        <div class="about-flow-left">
-          <div class="about-flow-num">3</div>
-          <div class="about-flow-line"></div>
-        </div>
-        <div class="about-flow-content">
-          <div class="about-flow-title">AIが言葉を整える</div>
-          <div class="about-flow-desc">Claude AIが小学校高学年でも読める言葉で箇条書きに整形する</div>
-        </div>
-      </div>
-      <div class="about-flow-step">
-        <div class="about-flow-left">
-          <div class="about-flow-num">4</div>
-          <div class="about-flow-line"></div>
-        </div>
-        <div class="about-flow-content">
-          <div class="about-flow-title">サイトに公開される</div>
-          <div class="about-flow-desc">自動でpoiqn.jpに反映される</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
   </main>
+
+  <button class="fixed-news-btn"
+    onclick="document.getElementById('news').scrollIntoView({behavior:'smooth'})">ニュースをチェック</button>
 
   <!-- FOOTER -->
   <footer role="contentinfo">
@@ -1027,9 +1362,9 @@
     // 感情ボタン設定 — ここだけ編集すれば全体に反映
     // =============================================
     const EMOTIONS = [
-      { label: 'こわい',      gif: 'img/face_anxiety.gif'   },
-      { label: 'むずかしい',  gif: 'img/face_difficult.gif' },
-      { label: 'しりたい',    gif: 'img/face_want.gif'      },
+      { label: 'こわい', gif: 'img/face_anxiety.gif' },
+      { label: 'むずかしい', gif: 'img/face_difficult.gif' },
+      { label: 'しりたい', gif: 'img/face_want.gif' },
     ];
 
     // カウント表示を更新
@@ -1095,7 +1430,7 @@
         // フェーズ③ バブルフェード(2.2s)後にスタンプ表示
         setTimeout(() => {
           panel2El.classList.add('stamps-visible');
-        }, 2800 + 2000);
+        }, 2800 + 2200 + 200);
       } else {
         panel2El.classList.remove('playing', 'stamps-visible');
         bubblesEl.style.transition = '';
@@ -1159,6 +1494,7 @@
       el.setAttribute('aria-pressed', String(pressed[idx]));
       db.ref(`counts/${idx}`).transaction(current => (current || 0) + (wasPressed ? -1 : 1));
       playEggBirth();
+      setTimeout(() => { panel2El.classList.add('stamp-pressed'); }, 9300);
     }
 
     // ニュースカードのスタンプ
@@ -1224,11 +1560,11 @@
           <div class="news-body" itemprop="description">${a.summary}</div>
           <div class="news-footer">
             <div class="news-source-wrap">
-              <span class="news-read-label">もっとくわしく！</span>
+              <span class="news-read-label">もっとくわしく!</span>
               <a class="news-source-btn" href="${a.url}" target="_blank" rel="noopener" itemprop="url">出典：${a.source}</a>
             </div>
             <div class="news-stamps-wrap">
-              <span class="news-read-label">どう思った？</span>
+              <span class="news-read-label">どう思った?</span>
               <div class="news-stamps" role="group" aria-label="この記事への感情">
               <button class="news-stamp-mini" data-emotion="0" onclick="miniStamp(this)" aria-pressed="false"></button>
               <button class="news-stamp-mini" data-emotion="1" onclick="miniStamp(this)" aria-pressed="false"></button>
@@ -1239,13 +1575,6 @@
         </article>
       `).join('');
 
-      // news-empty を最背面に再挿入
-      slider.insertAdjacentHTML('afterbegin', `
-        <div class="news-empty" id="news-empty">
-          <p class="news-empty-msg">全部読んだよ！</p>
-          <button class="news-reset-btn" onclick="resetCards()">もう一度見る</button>
-        </div>
-      `);
 
       // 感情アイコン描画
       slider.querySelectorAll('.news-stamp-mini[data-emotion]').forEach(btn => {
@@ -1265,29 +1594,41 @@
     loadNews();
 
     // ── Tinder式カードスタック ──
-    const sliderEl  = document.getElementById('news-slider');
+    const sliderEl = document.getElementById('news-slider');
     let cardsList = [];
-    let current   = 0;
+    let current = 0;
 
-    function updateStack(animate) {
+    function updateStack(animate, skip) {
       const total = cardsList.length;
+      const targets = [];
       cardsList.forEach((card, i) => {
+        if (card === skip) return;
         const pos = i - current;
         if (pos < 0) { card.style.display = 'none'; return; }
         card.style.display = '';
-        card.style.zIndex  = total - pos;
+        card.style.zIndex = total - pos;
         card.style.opacity = pos <= 2 ? '1' : '0';
-        if (animate && pos > 0) {
-          card.style.transition = 'transform 0.3s ease';
-          setTimeout(() => { card.style.transition = ''; }, 300);
-        } else if (!animate) {
-          card.style.transition = '';
-        }
-        if (pos === 0)      card.style.transform = '';
-        else if (pos === 1) card.style.transform = 'scale(0.96) translateY(10px)';
-        else if (pos === 2) card.style.transform = 'scale(0.92) translateY(20px)';
-        else                card.style.transform = 'scale(0.88) translateY(30px)';
+        card.style.transition = '';
+        let tf;
+        if (pos === 0) tf = '';
+        else if (pos === 1) tf = 'scale(0.96) translateY(10px)';
+        else if (pos === 2) tf = 'scale(0.92) translateY(20px)';
+        else tf = 'scale(0.88) translateY(30px)';
+        targets.push({ card, tf });
       });
+      if (animate) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            targets.forEach(({ card, tf }) => {
+              card.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+              card.style.transform = tf;
+              setTimeout(() => { card.style.transition = ''; }, 500);
+            });
+          });
+        });
+      } else {
+        targets.forEach(({ card, tf }) => { card.style.transform = tf; });
+      }
     }
 
     function resetCards() {
@@ -1299,7 +1640,7 @@
     function initSlider() {
       const slider = document.getElementById('news-slider');
       cardsList = [...slider.querySelectorAll('.news-card')];
-      current   = 0;
+      current = 0;
       updateStack(false);
 
       const THRESHOLD = 80;
@@ -1312,7 +1653,9 @@
         isDragging = true; dragX = 0;
         const pt = e.touches ? e.touches[0] : e;
         startX = pt.clientX; startY = pt.clientY;
-        card.style.transition = '';
+        card.style.transition = 'transform 0.1s ease';
+        card.style.transform = 'scale(0.96)';
+        setTimeout(() => { card.style.transition = ''; card.style.transform = ''; }, 120);
         card.classList.add('is-dragging');
       }
 
@@ -1323,7 +1666,7 @@
         const pt = e.touches ? e.touches[0] : e;
         dragX = pt.clientX - startX;
         const dragY = (pt.clientY - startY) * 0.2;
-        const rot   = dragX * 0.07;
+        const rot = dragX * 0.07;
         card.style.transform = `translateX(${dragX}px) translateY(${dragY}px) rotate(${rot}deg)`;
       }
 
@@ -1334,30 +1677,48 @@
         card.classList.remove('is-dragging');
         if (Math.abs(dragX) > THRESHOLD) {
           const flyX = dragX > 0 ? '150%' : '-150%';
-          const rot  = dragX > 0 ? '25deg' : '-25deg';
+          const rot = dragX > 0 ? '25deg' : '-25deg';
           card.style.transition = 'transform 0.4s ease-in, opacity 0.35s ease-in';
-          card.style.transform  = `translateX(${flyX}) rotate(${rot})`;
-          card.style.opacity    = '0';
+          card.style.transform = `translateX(${flyX}) rotate(${rot})`;
+          card.style.opacity = '0';
+          setTimeout(() => {
+            current++;
+            updateStack(true, card);
+          }, 200);
           setTimeout(() => {
             card.style.display = 'none';
-            current++;
-            updateStack(true);
+            const newsEgg = document.querySelector('.news-egg');
+            if (newsEgg) {
+              newsEgg.src = 'img/egg_yure.GIF?t=' + Date.now();
+              setTimeout(() => { newsEgg.src = 'img/egg_kyoro.GIF'; }, 1800);
+            }
+            if (current >= cardsList.length) resetCards();
           }, 380);
         } else {
           card.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
-          card.style.transform  = '';
+          card.style.transform = '';
           setTimeout(() => { card.style.transition = ''; }, 450);
         }
       }
 
-      slider.addEventListener('mousedown',  onStart);
+      slider.addEventListener('mousedown', onStart);
       slider.addEventListener('touchstart', onStart, { passive: true });
-      window.addEventListener('mousemove',  onMove);
-      window.addEventListener('touchmove',  onMove, { passive: false });
-      window.addEventListener('mouseup',    onEnd);
-      window.addEventListener('touchend',   onEnd);
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('touchmove', onMove, { passive: false });
+      window.addEventListener('mouseup', onEnd);
+      window.addEventListener('touchend', onEnd);
+
+      // ロード後に2枚目カードをチラ見えさせてスワイプを示唆
+      setTimeout(() => {
+        const second = cardsList[1];
+        if (second) {
+          second.classList.add('hint-anim');
+          second.addEventListener('animationend', () => second.classList.remove('hint-anim'), { once: true });
+        }
+      }, 1200);
     }
   </script>
 
 </body>
+
 </html>

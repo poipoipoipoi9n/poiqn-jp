@@ -12,10 +12,6 @@ on:
       url:
         description: '元記事URL'
         required: true
-      publishedAt:
-        description: '公開日（例: 2026-03-17）'
-        required: false
-        default: ''
       facts:
         description: 'ファクト（箇条書きでOK）'
         required: true
@@ -49,7 +45,6 @@ jobs:
           ARTICLE_TITLE: ${{ inputs.title }}
           ARTICLE_SOURCE: ${{ inputs.source }}
           ARTICLE_URL: ${{ inputs.url }}
-          ARTICLE_PUBLISHED_AT: ${{ inputs.publishedAt }}
           ARTICLE_FACTS: ${{ inputs.facts }}
 
       - name: Commit news.json
