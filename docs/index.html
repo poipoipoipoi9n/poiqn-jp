@@ -702,6 +702,12 @@
       margin-bottom: 4px;
     }
 
+    .bg-source {
+      font-size: 0.71rem;
+      color: var(--gray-mid);
+      margin: 0;
+    }
+
     .news-egg {
       position: absolute;
       top: calc(14dvh - 36px);
@@ -1922,6 +1928,7 @@
             <h4 class="bg-block-label">なにが問題？</h4>
             <div class="bg-block-text">${c.issue}</div>
           </div>
+          ${c.source ? `<p class="bg-source">出典：${c.source}</p>` : ''}
         </article>
       `).join('');
 
