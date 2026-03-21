@@ -1,0 +1,61 @@
+name: Update Background
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: 'カテゴリ（世界情勢 / 日本の政治）'
+        required: true
+        default: '日本の政治'
+      title:
+        description: 'タイトル'
+        required: true
+      overview:
+        description: '概要（箇条書き、改行区切り）'
+        required: true
+      issue:
+        description: '問題点（箇条書き、改行区切り）'
+        required: true
+      source:
+        description: '出典（任意）'
+        required: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+
+      - name: Generate & prepend background card
+        working-directory: scripts
+        run: node update-background.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BG_CATEGORY:  ${{ inputs.category }}
+          BG_TITLE:     ${{ inputs.title }}
+          BG_OVERVIEW:  ${{ inputs.overview }}
+          BG_ISSUE:     ${{ inputs.issue }}
+          BG_SOURCE:    ${{ inputs.source }}
+
+      - name: Commit background.json
+        run: |
+          git config user.name  "poiqn-bot"
+          git config user.email "bot@poiqn.jp"
+          git add docs/background.json
+          git diff --staged --quiet || git commit -m "chore: add background card [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
