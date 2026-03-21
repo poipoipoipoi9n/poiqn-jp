@@ -603,6 +603,7 @@
       padding: calc(14dvh + 80px) 24px 24px;
       overflow: hidden;
       box-sizing: border-box;
+      transition: background 0.4s ease, padding 0.4s ease;
       position: relative;
       transition: background 0.4s ease;
     }
@@ -647,6 +648,11 @@
 
     .news-section[data-nb="1"] {
       background: var(--gray-mid);
+      padding-top: calc(8dvh + 62px);
+    }
+
+    .news-section[data-nb="1"] .news-egg {
+      top: calc(8dvh - 16px);
     }
     .news-section[data-nb="1"] .ns-pane[data-nb="0"] {
       opacity: 0;
@@ -716,7 +722,7 @@
       width: 72px;
       height: auto;
       cursor: pointer;
-      transition: width 0.4s ease;
+      transition: width 0.4s ease, top 0.4s ease;
     }
 
     .news-section[data-nb="1"] .news-egg {
@@ -734,6 +740,11 @@
     /* カードスタック */
     .news-stack-wrap {
       position: relative;
+      transition: margin-top 0.4s ease;
+    }
+
+    .news-section[data-nb="1"] .news-stack-wrap {
+      margin-top: -180px;
     }
 
     .news-slider {
@@ -1419,7 +1430,6 @@
         これらを守るのも、壊すのも政治。<br><br>
 
         開発者は絵を描くことが好きです。<br>
-        デザインの仕事を愛しています。<br>
         友達と美味しいご飯をこれからも食べたい。<br>
         旅行にも行きたい。<br>
         でも結局、一人でいっぱい寝る時間が一番好き。<br><br>
