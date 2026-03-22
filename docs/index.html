@@ -1872,8 +1872,8 @@
           card.style.transform = `translateX(${flyX}) rotate(${rot})`;
           card.style.opacity = '0';
 
-          if (dragX > 0) {
-            // → 次のカード
+          if (dragX < 0) {
+            // ← 次のカード
             setTimeout(() => {
               cur++;
               updateStack(true, card);
@@ -1884,7 +1884,7 @@
               if (cur >= cards.length) resetCards();
             }, 380);
           } else {
-            // ← 前のカード
+            // → 前のカード
             if (cur === 0) {
               // 最初のカード → スナップバック
               card.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
