@@ -1833,6 +1833,7 @@
 
       const THRESHOLD = 80;
       let isDragging = false, startX, startY, dragX;
+      let pressTimer = null;
 
       function getTop() { return cur < cards.length ? cards[cur] : null; }
 
@@ -1843,7 +1844,7 @@
         startX = pt.clientX; startY = pt.clientY;
         card.style.transition = 'transform 0.1s ease';
         card.style.transform = 'scale(0.96)';
-        setTimeout(() => { card.style.transition = ''; card.style.transform = ''; }, 120);
+        pressTimer = setTimeout(() => { pressTimer = null; card.style.transition = ''; card.style.transform = ''; }, 120);
         card.classList.add('is-dragging');
       }
 
@@ -1861,6 +1862,7 @@
       function onEnd() {
         if (!isDragging) return;
         isDragging = false;
+        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
         const card = getTop(); if (!card) return;
         card.classList.remove('is-dragging');
         if (Math.abs(dragX) > THRESHOLD) {
