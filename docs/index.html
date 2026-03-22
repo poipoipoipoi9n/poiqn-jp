@@ -1869,15 +1869,62 @@
           card.style.transition = 'transform 0.4s ease-in, opacity 0.35s ease-in';
           card.style.transform = `translateX(${flyX}) rotate(${rot})`;
           card.style.opacity = '0';
-          setTimeout(() => {
-            cur++;
-            updateStack(true, card);
-          }, 200);
-          setTimeout(() => {
-            card.style.display = 'none';
-            if (opts.onSwipe) opts.onSwipe();
-            if (cur >= cards.length) resetCards();
-          }, 380);
+
+          if (dragX > 0) {
+            // → 次のカード
+            setTimeout(() => {
+              cur++;
+              updateStack(true, card);
+            }, 200);
+            setTimeout(() => {
+              card.style.display = 'none';
+              if (opts.onSwipe) opts.onSwipe();
+              if (cur >= cards.length) resetCards();
+            }, 380);
+          } else {
+            // ← 前のカード
+            if (cur === 0) {
+              // 最初のカード → スナップバック
+              card.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              card.style.transform = '';
+              card.style.opacity = '';
+              setTimeout(() => { card.style.transition = ''; }, 450);
+            } else {
+              const prevCard = cards[cur - 1];
+              setTimeout(() => {
+                cur--;
+                // 前のカードをスタック位置から手前にアニメーション
+                prevCard.style.display = '';
+                prevCard.style.transition = '';
+                prevCard.style.transform = 'scale(0.92) translateY(20px)';
+                prevCard.style.opacity = '1';
+                prevCard.style.zIndex = cards.length;
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                  prevCard.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)';
+                  prevCard.style.transform = '';
+                  setTimeout(() => { prevCard.style.transition = ''; }, 450);
+                }));
+                // 他のカードを再スタック
+                cards.forEach((c, i) => {
+                  if (c === card || c === prevCard) return;
+                  const pos = i - cur;
+                  c.style.transition = '';
+                  if (pos < 0) { c.style.display = 'none'; return; }
+                  c.style.display = '';
+                  c.style.zIndex = cards.length - pos;
+                  c.style.opacity = pos <= 2 ? '1' : '0';
+                  if (pos === 1) c.style.transform = 'scale(0.96) translateY(10px)';
+                  else if (pos === 2) c.style.transform = 'scale(0.92) translateY(20px)';
+                  else c.style.transform = 'scale(0.88) translateY(30px)';
+                });
+              }, 200);
+              setTimeout(() => {
+                card.style.display = 'none';
+                card.style.opacity = '';
+                if (opts.onSwipe) opts.onSwipe();
+              }, 380);
+            }
+          }
         } else {
           card.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
           card.style.transform = '';
