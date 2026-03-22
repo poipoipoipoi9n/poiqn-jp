@@ -1,0 +1,19 @@
+name: Reset Emotion Counts
+
+on:
+  schedule:
+    - cron: '0 15 * * *'   # JST 00:00 (UTC 15:00)
+  workflow_dispatch:
+
+jobs:
+  reset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset counts to 0
+        run: |
+          TODAY=$(TZ=Asia/Tokyo date +%Y-%m-%d)
+          curl -s -X PATCH \
+            "https://poiqn-jp-default-rtdb.asia-southeast1.firebasedatabase.app/.json" \
+            -H "Content-Type: application/json" \
+            -d "{\"date\": \"$TODAY\", \"counts\": {\"0\": 0, \"1\": 0, \"2\": 0}}" \
+            -w "\nHTTP status: %{http_code}\n"

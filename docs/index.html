@@ -1575,10 +1575,10 @@
       const stored = snap.val();
       const today  = getTodayJST();
       if (stored !== today) {
-        const reset = { date: today, counts: { 0: 0, 1: 0, 2: 0 } };
-        db.ref('/').update(reset);
+        db.ref('date').set(today).catch(e => console.error('date reset failed:', e));
+        db.ref('counts').set({ 0: 0, 1: 0, 2: 0 }).catch(e => console.error('counts reset failed:', e));
       }
-    });
+    }).catch(e => console.error('date read failed:', e));
 
     // Firebase リアルタイムリスナー — カウント同期
     EMOTIONS.forEach((_, idx) => {
