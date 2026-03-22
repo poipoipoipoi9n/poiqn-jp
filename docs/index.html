@@ -600,12 +600,12 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: calc(14dvh + 80px) 24px 24px;
+      padding: calc(8dvh + 62px) 24px 24px;
+      background: var(--gray-mid);
       overflow: hidden;
       box-sizing: border-box;
-      transition: background 0.4s ease, padding 0.4s ease;
       position: relative;
-      transition: background 0.4s ease;
+      transition: background 0.4s ease, padding 0.4s ease;
     }
 
     /* 見出し: 2枚重ねてフェード切り替え */
@@ -647,12 +647,12 @@
     }
 
     .news-section[data-nb="1"] {
-      background: var(--gray-mid);
-      padding-top: calc(8dvh + 62px);
+      background: var(--gray-light);
+      padding-top: calc(14dvh + 80px);
     }
 
     .news-section[data-nb="1"] .news-egg {
-      top: calc(8dvh - 16px);
+      top: calc(14dvh - 36px);
     }
     .news-section[data-nb="1"] .ns-pane[data-nb="0"] {
       opacity: 0;
@@ -716,17 +716,17 @@
 
     .news-egg {
       position: absolute;
-      top: calc(14dvh - 36px);
+      top: calc(8dvh - 16px);
       left: 50%;
       transform: translateX(-50%);
-      width: 72px;
+      width: 40px;
       height: auto;
       cursor: pointer;
       transition: width 0.4s ease, top 0.4s ease;
     }
 
     .news-section[data-nb="1"] .news-egg {
-      width: 40px;
+      width: 72px;
     }
     .news-egg.jump {
       animation: egg-jump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -740,11 +740,12 @@
     /* カードスタック */
     .news-stack-wrap {
       position: relative;
+      margin-top: -180px;
       transition: margin-top 0.4s ease;
     }
 
     .news-section[data-nb="1"] .news-stack-wrap {
-      margin-top: -180px;
+      margin-top: 0;
     }
 
     .news-slider {
@@ -1345,18 +1346,18 @@
 
     <!-- NEWS / BACKGROUND -->
     <section class="news-section" id="news" aria-label="ニュース・背景情報">
-      <h2 class="section-label news-label ns-label" data-nb="0">NEWS</h2>
-      <h2 class="section-label news-label ns-label" data-nb="1" aria-hidden="true">BACKGROUND</h2>
+      <h2 class="section-label news-label ns-label" data-nb="0">BACKGROUND</h2>
+      <h2 class="section-label news-label ns-label" data-nb="1" aria-hidden="true">NEWS</h2>
 
       <img class="news-egg" src="img/egg_kyoro.GIF" alt="" aria-hidden="true" onclick="this.classList.remove('jump'); void this.offsetWidth; this.classList.add('jump');">
 
       <div class="news-stack-wrap">
         <div class="ns-pane" data-nb="0">
-          <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
+          <div class="news-slider" id="bg-slider" role="region" aria-label="背景情報 スワイプで閲覧">
           </div>
         </div>
         <div class="ns-pane" data-nb="1">
-          <div class="news-slider" id="bg-slider" role="region" aria-label="背景情報 スワイプで閲覧">
+          <div class="news-slider" id="news-slider" role="region" aria-label="ニュース一覧 スワイプで閲覧">
           </div>
         </div>
       </div>
@@ -1963,9 +1964,8 @@
         const entry = entries[0];
         const isNowVisible = entry.isIntersecting;
         if (isNowVisible && !visible) {
-          // top < 0 → 下から来た（PLANET方向） → BACKGROUND
-          // top >= 0 → 上から来た（HERO方向）  → NEWS
-          const n = entry.boundingClientRect.top < 0 ? 1 : 0;
+          // 常にBACKGROUND（state=0）から表示
+          const n = 0;
           state = n;
           section.dataset.nb = String(n);
         }
@@ -1984,10 +1984,10 @@
         setTimeout(() => { transitioning = false; }, 500);
       }
 
-      window.nbGoToNews = function () { setNbState(0); };
+      window.nbGoToNews = function () { setNbState(1); };
       window.nbGoToBackground = function () {
-        state = 1;
-        section.dataset.nb = '1';
+        state = 0;
+        section.dataset.nb = '0';
         section.scrollIntoView({ behavior: 'smooth' });
       };
 
